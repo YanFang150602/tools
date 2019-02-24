@@ -1,0 +1,24 @@
+git clone -b br_Non-Commercial_AC-WANV3R2C00_Polkomtel380 git@rnd-isourceb.huawei.com:yWX373151/AC_BP_trunk_ac_bp_web.git
+
+添加远程仓
+git remote add trunk git@rnd-isourceb.huawei.com:AC_BP_trunk/ac_bp_web.git
+git remote -v 查看远程仓信息
+git remote show 查看本地定义的远程仓名
+git remote show source 查看source远程仓与本地的信息
+
+
+关联远程分支前，先提取fetch远程分支数据，在关联分支--set-upstream
+git fetch origin br
+git branch --set-upstream local_br origin/br
+
+git fetch 远程仓 远程分支
+git checkout -b 本地分支 远程仓/远程分支
+
+git merge 本地另一分支
+git checkout 本地另一分支 路径|文件名
+
+git stash list
+git stash save "xxx"
+git stash show
+git stash apply stash@{0}
+git stash drop stash@{0}
