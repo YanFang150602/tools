@@ -1,0 +1,14 @@
+未与 -source 1.7 一起设置引导类路径
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-compiler-plugin</artifactId>
+  <version>3.3</version>
+  <configuration>
+    <source>1.8</source>
+    <target>1.8</target>
+    <compilerArgument>-Xlint:all</compilerArgument>
+    <showWarnings>false</showWarnings>
+    <showDeprecation>true</showDeprecation>
+    <encoding>UTF-8</encoding>
+  </configuration>
+</plugin>

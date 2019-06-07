@@ -17,8 +17,23 @@ git checkout -b 本地分支 远程仓/远程分支
 git merge 本地另一分支
 git checkout 本地另一分支 路径|文件名
 
+如果只是简单的将feature分支的文件f.txt copy到master分支上；
+git checkout master
+git checkout feature f.tx
+
 git stash list
 git stash save "xxx"
 git stash show
 git stash apply stash@{0}
 git stash drop stash@{0}
+
+文件从暂存区回退到工作区
+git reset HEAD  
+回退文件，将文件从暂存区回退到工作区
+git reset HEAD filename   
+回退版本，一个^表示一个版本，可以多个，另外也可以使用 git reset HEAD～n这种形式
+git reset HEAD^   
+意为将版本库回退1个版本，但是不仅仅是将本地版本库的头指针全部重置到指定版本，也会重置暂存区，并且会将工作区代码也回退到这个版本
+git reset --hard HEAD～1
+意为将版本库软回退1个版本，所谓软回退表示将本地版本库的头指针全部重置到指定版本，且将这次提交之后的所有变更都移动到暂存区
+git reset --soft HEAD～1 
