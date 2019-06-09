@@ -1,0 +1,15 @@
+{
+    "name": "theme-gv-gray",
+    "version": "0.1.0",
+    "publisher": "GV",
+    "engines": { "vscode": "*" },
+    "contributes": {
+        "themes": [
+            {
+                "label": "gv-gray",
+                "uiTheme": "vs",
+                "path": "./themes/gv-gray-color-theme.json"
+            }
+        ]
+    }
+}
