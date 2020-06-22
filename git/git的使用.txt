@@ -6,10 +6,15 @@ git remote -v 查看远程仓信息
 git remote show 查看本地定义的远程仓名
 git remote show source 查看source远程仓与本地的信息
 
+本地新建分支，并上传到远程仓上
+git checkout -b new_local_br
+此时git push失败，需要执行下面，在远程仓上也新建了分支，并与本地分支保持跟踪
+git push --set-upstream origin new_remote_br
+后面就可以直接git push
 
 关联远程分支前，先提取fetch远程分支数据，在关联分支--set-upstream
 git fetch origin br
-git branch --set-upstream local_br origin/br
+git branch --set-upstream-to local_br origin/br (远程分支要存在，否则失败)
 
 git fetch 远程仓 远程分支
 git checkout -b 本地分支 远程仓/远程分支
