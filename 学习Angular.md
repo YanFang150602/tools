@@ -43,6 +43,37 @@ ng serve --open
 
 ## @Input
 
+### @Input描述
+
+父组件可以传递数据给子组件，包括将父组件对象也可以传递给子组件
+### @Input使用
+1、子组件里使用
+```typescript
+// 子组件.ts
+// 引用Input
+import { Input } from '@angular/cli';
+
+// 在子组件class里使用Input
+// x是自定义属性名，用在父组件调用子组件时，子组件的属性<child-selector [x]="父组件里的属性"></child-selector>
+// y是直接用在子组件里的属性
+@Input('x') y: any;
+```
+```html
+<!-- 子组件模板 -->
+<p>{{y}}</p>
+```
+2、父组件里使用
+```html
+<!-- 父组件模板 -->
+<child-selector [x]="parentMsg"></child-selector>
+```
+```typescript
+// 父组件.ts
+// 父组件class里定义parentMsg属性
+parentMsg: string = '我来自Parent Component的！';
+```
+
+
 ## @ViewChild
 
 ## @Output
