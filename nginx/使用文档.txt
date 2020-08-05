@@ -1,0 +1,21 @@
+# 进入 nginx 目录
+cd C:\Software\nginx-1.16.0
+# 启动 nginx
+start nginx[.exe]
+# 修改nginx.conf文件，通过下面命令重启 nginx
+nginx -s reload
+# 停止 nginx
+nginx -s stop
+# 强制杀掉 nginx
+taskkill /f /t /im nginx.exe
+
+在 nginx 的配置文件里，配置相关请求，nginx.conf文件修改：
+        root         D:/workspace/xxservice/src/main/webapp/build;
+        
+        location ^~ /static/cmn/ {
+            alias D:/workspace/xxservice/src/main/webapp/build/;
+        }
+
+        location / {
+            index  index.html index.htm;
+        }
