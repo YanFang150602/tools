@@ -49,3 +49,10 @@ cmd /c ""%ConEmuDir%\..\git-for-windows\bin\bash" --login -i"
 Settings/Keys & Macro/Highlight
 far.exe /e%1:%2 "%3"
 
+win + alt + p //打开设置Settings
+
+cmder修改打开路径，如修改{cmd::Cmder}项:
+选择Startup->Task，修改{cmd::Cmder}项，把:
+cmd /k "%ConEmuDir%\..\init.bat"
+修改成:
+cmd /k "%ConEmuDir%\..\init.bat"  -new_console:d:D:\
