@@ -66,4 +66,9 @@ $ git config --global core.autocrlf input
 
 $ git config --global core.autocrlf false
 
-转自：http://www.qinbin.me/git-core-autocrlf配置说明/
+设置git全局忽略文件，此方法设置的忽略列表对当前用户本地所有仓库有效，但不会上传到远程仓库。
+1、创建.gitignore
+新建一个文件 ~/.gitignore，并添加所有仓库都需要忽略的文件列表
+2、设置全局有效
+git config --global core.excludesfile ~/.gitignore
+如果仓库中还有.gitignore文件，则两者均会忽略。
