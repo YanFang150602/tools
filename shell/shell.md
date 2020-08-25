@@ -30,6 +30,61 @@ echo $your_name
 your_name="alibaba"
 echo $your_name
 ```
+反斜杠允许shell脚本将解释为实际的美元符号，而不是变量。
+
+```shell
+[root@wcl ~]# echo "The cost of the item is \$15"
+The cost of the item is $15
+```
+
+### 在Shell变量中使用反引号（`）
+
+该反引号允许一个shell命令的输出分配给一个变量。虽然这看起来不多，但它是脚本编程中的一个主要构建块。您必须用反引号字符围绕整个命令行命令：
+
+```shell
+[root@wcl ~]# testing=`date`
+```
+
+shell在反引号内运行命令并将输出分配给变量testing。
+
+下面是使用普通shell命令的输出创建变量的示例：
+
+```shell
+[root@wcl ~]# testing=`date`
+[root@wcl ~]# echo "date&time:"$testing
+```
+
+```shell
+date&time:2018年 05月 10日 星期四 10:33:10 CST
+```
+
+变量testing接收来自date命令的输出，并将其用于echo语句中以显示它。
+
+运行shell脚本会产生以下输出：
+
+```shell
+
+[root@wcl ~]# cat date.sh 
+#!/bin/bash
+testing=`date`
+echo "Today's date&time is: "$testing
+[root@wcl ~]# chmod 744 date.sh 
+[root@wcl ~]# ./date.sh 
+Today's date&time is: 2018年 05月 10日 星期四 10:36:38 CST
+```
+
+注意：在bash中，您还可以使用$(...)语法代替反向符号`，它具有可重入的优点。
+
+例如：
+
+```shell
+[root@wcl ~]# test2=$(date)
+[root@wcl ~]# echo "今天的时间是："$test2
+```
+
+```
+今天的时间是：2018年 05月 10日 星期四 10:37:40 CST
+```
 
 ### 只读变量
 
