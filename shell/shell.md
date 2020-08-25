@@ -168,6 +168,31 @@ hello, runoob ! hello, runoob !
 hello, runoob ! hello, ${your_name} !
 ```
 
+#### 字符串比较
+
+常用比较运算符：= 或者（==）、!= 
+
+```shell
+str="root"
+#==两边没有空格，不会进行if判断，直接运行echo "erro"
+if [ ${str}=="root" ]；then
+	echo "erro"
+fi
+```
+
+在使用变量比较字符串之前，最好在判断之前加一个判断变量是否为空  或者使用双引号将其括起来，
+注意，必须使用双引号，因为变量在双引号中才会被解析。
+
+```shell
+str="root"
+if [ -n ${str} ];then
+	echo "${str}值不为空"
+fi
+if [ "${str}" == "root" ]；then
+	echo "${str}与root相等"
+fi
+```
+
 #### 获取字符串长度
 
 ```shell
