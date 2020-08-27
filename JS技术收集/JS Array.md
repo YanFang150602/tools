@@ -129,23 +129,23 @@ myArray = myRe.exec("cdbBdbsbz");
 
 对数组元素进行排序，并返回当前数组。
 
-### 语法
+**语法**
 
 ```js
 arr.sort([compareFunction])
 ```
 
-### 参数
+**参数**
 
 - `compareFunction` 可选
 
   用来指定按某种顺序进行排列的函数。如果省略，元素按照转换为的字符串的各个字符的Unicode位点进行排序。`firstEl`第一个用于比较的元素。`secondEl`第二个用于比较的元素。
 
-### 返回值
+**返回值**
 
 排序后的数组。请注意，数组已原地排序，并且不进行复制。
 
-### 描述
+**描述**
 
 如果指明了 `compareFunction` ，那么数组会按照调用该函数的返回值排序。即 a 和 b 是两个将要被比较的元素：
 
@@ -229,9 +229,9 @@ items.sort(function(a, b) {
 });
 ```
 
-### 示例
+**示例**
 
-#### 使用映射改善排序
+<u>使用映射改善排序</u>
 
 `compareFunction` 可能需要对元素做多次映射以实现排序，尤其当 `compareFunction` 较为复杂，且元素较多的时候，某些 `compareFunction` 可能会导致很高的负载。使用 map 辅助排序将会是一个好主意。基本思想是首先将数组中的每个元素比较的实际值取出来，排序后再将数组恢复。
 
@@ -259,13 +259,13 @@ var result = mapped.map(function(el){
 
 在任意的位置给数组添加或删除任意个元素。
 
-### 语法
+**语法**
 
 ```js
 array.splice(start[, deleteCount[, item1[, item2[, ...]]]])
 ```
 
-### 参数
+**参数**
 
 - `start`
 
@@ -285,13 +285,13 @@ array.splice(start[, deleteCount[, item1[, item2[, ...]]]])
 
   要添加进数组的元素,从`start` 位置开始。如果不指定，则 `splice()` 将只删除数组元素。
 
-### 返回值
+**返回值**
 
 由被删除的元素组成的一个数组。如果只删除了一个元素，则返回只包含一个元素的数组。如果没有删除元素，则返回空数组。
 
-### 示例
+**示例**
 
-#### 从第 2 位开始删除 0 个元素，插入1个元素
+<u>从第 2 位开始删除 0 个元素，插入1个元素</u>
 
 ```js
 var myFish = ["angel", "clown", "mandarin", "sturgeon"];
@@ -301,7 +301,7 @@ var removed = myFish.splice(2, 0, "drum");
 // 被删除的元素: [], 没有元素被删除
 ```
 
-#### 从第 2 位开始删除 0 个元素，插入n个元素
+<u>从第 2 位开始删除 0 个元素，插入n个元素</u>
 
 ```js
 var myFish = ['angel', 'clown', 'mandarin', 'sturgeon'];
@@ -311,7 +311,7 @@ var removed = myFish.splice(2, 0, 'drum', 'guitar');
 // 被删除的元素: [], 没有元素被删除
 ```
 
-#### 从第 3 位开始删除 1 个元素
+<u>从第 3 位开始删除 1 个元素</u>
 
 ```js
 var myFish = ['angel', 'clown', 'drum', 'mandarin', 'sturgeon'];
@@ -321,7 +321,7 @@ var removed = myFish.splice(3, 1);
 // 被删除的元素: ["mandarin"]
 ```
 
-#### 从第 2 位开始删除 1 个元素，插入1个元素
+<u>从第 2 位开始删除 1 个元素，插入1个元素</u>
 
 ```js
 var myFish = ['angel', 'clown', 'drum', 'sturgeon'];
@@ -331,7 +331,7 @@ var removed = myFish.splice(2, 1, "trumpet");
 // 被删除的元素: ["drum"]
 ```
 
-#### 从第 0 位开始删除 2 个元素，插入n个元素
+<u>从第 0 位开始删除 2 个元素，插入n个元素</u>
 
 ```js
 var myFish = ['angel', 'clown', 'trumpet', 'sturgeon'];
@@ -341,7 +341,7 @@ var removed = myFish.splice(0, 2, 'parrot', 'anemone', 'blue');
 // 被删除的元素: ["angel", "clown"]
 ```
 
-#### 从第 2 位开始删除 2 个元素
+<u>从第 2 位开始删除 2 个元素</u>
 
 ```js
 var myFish = ['parrot', 'anemone', 'blue', 'trumpet', 'sturgeon'];
@@ -351,7 +351,7 @@ var removed = myFish.splice(myFish.length - 3, 2);
 // 被删除的元素: ["blue", "trumpet"]
 ```
 
-#### 从倒数第 2 位开始删除 1 个元素
+<u>从倒数第 2 位开始删除 1 个元素</u>
 
 ```js
 var myFish = ['angel', 'clown', 'mandarin', 'sturgeon'];
@@ -361,7 +361,7 @@ var removed = myFish.splice(-2, 1);
 // 被删除的元素: ["mandarin"]
 ```
 
-#### 从第 2 位开始删除所有元素
+<u>从第 2 位开始删除所有元素</u>
 
 ```js
 var myFish = ['angel', 'clown', 'mandarin', 'sturgeon'];
@@ -370,8 +370,6 @@ var removed = myFish.splice(2);
 // 运算后的 myFish: ["angel", "clown"]
 // 被删除的元素: ["mandarin", "sturgeon"]
 ```
-
-
 
 ## indexOf：**找出某个元素在数组中的索引** 
 
@@ -402,13 +400,13 @@ var myVar4 = a.join('');    // myVar4的值变为"WindRainFire"
 
 `**slice()**` 方法返回一个新的数组对象，这一对象是一个由 `begin` 和 `end` 决定的原数组的**浅拷贝**（包括 `begin`，不包括`end`）。原始数组不会被改变。 
 
-### 语法
+**语法**
 
 ```js
 arr.slice([begin[, end]])
 ```
 
-### 参数
+**参数**
 
 - `begin` 可选
 
@@ -432,11 +430,11 @@ arr.slice([begin[, end]])
 
   如果 `end` 大于数组的长度，`slice` 也会一直提取到原数组末尾。
 
-### 返回值
+**返回值**
 
 一个含有被提取元素的新数组。
 
-### 描述
+**描述**
 
 `slice` 不会修改原数组，只会返回一个浅复制了原数组中的元素的一个新数组。原数组的元素会按照下述规则拷贝：
 
@@ -446,9 +444,9 @@ arr.slice([begin[, end]])
 
 如果向两个数组任一中添加了新元素，则另一个不会受到影响。
 
-### 示例
+**示例**
 
-#### 返回现有数组的一部分
+<u>返回现有数组的一部分</u>
 
 ```js
 var fruits = ['Banana', 'Orange', 'Lemon', 'Apple', 'Mango'];
@@ -462,13 +460,13 @@ var citrus = fruits.slice(1, 3);
 
 从类数组对象或者可迭代对象中创建一个新的数组实例。 
 
-### 语法
+**语法**
 
 ```
 Array.from(arrayLike[, mapFn[, thisArg]])
 ```
 
-### 参数
+**参数**
 
 - `arrayLike`
 
@@ -482,20 +480,20 @@ Array.from(arrayLike[, mapFn[, thisArg]])
 
   可选参数，执行回调函数 `mapFn` 时 `this` 对象。
 
-### 返回值
+**返回值**
 
 一个新的[`数组`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Array)实例。
 
-### 示例
+**示例**
 
-#### 从 `String` 生成数组
+从 `String` 生成数组
 
 ```js
 Array.from('foo'); 
 // [ "f", "o", "o" ]
 ```
 
-#### 从 `Set` 生成数组
+从 `Set` 生成数组
 
 ```js
 const set = new Set(['foo', 'bar', 'baz', 'foo']);
@@ -503,7 +501,7 @@ Array.from(set);
 // [ "foo", "bar", "baz" ]
 ```
 
-#### 从 `Map` 生成数组
+从 `Map` 生成数组
 
 ```js
 const map = new Map([[1, 2], [2, 4], [4, 8]]);
@@ -518,7 +516,7 @@ Array.from(mapper.keys());
 // ['1', '2'];
 ```
 
-#### 从类数组对象（arguments）生成数组
+从类数组对象（arguments）生成数组
 
 ```js
 function f() {
@@ -530,7 +528,7 @@ f(1, 2, 3);
 // [ 1, 2, 3 ]
 ```
 
-#### 在 `Array.from` 中使用箭头函数
+在 `Array.from` 中使用箭头函数
 
 ```js
 Array.from([1, 2, 3], x => x + x);
@@ -540,7 +538,7 @@ Array.from({length: 5}, (v, i) => i);
 // [0, 1, 2, 3, 4]
 ```
 
-#### Sequence generator (range)
+Sequence generator (range)
 
 ```js
 // Sequence generator function (commonly referred to as "range", e.g. Clojure, PHP etc)
@@ -559,7 +557,7 @@ range('A'.charCodeAt(0), 'Z'.charCodeAt(0), 1).map(x => String.fromCharCode(x));
 // ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 ```
 
-#### 数组去重合并
+数组去重合并
 
 ```js
 function combine(){ 
@@ -573,6 +571,16 @@ console.log(combine(m,n));
 
 # 迭代方法
 
+**语法**
+
+**参数**
+
+**返回值**
+
+**描述**
+
+**示例**
+
 ## forEach：数组遍历
 
 ```js
@@ -584,21 +592,122 @@ fruits.forEach(function (item, index, array) {
 // Banana 1
 ```
 
-## keys：获取数组索引键
+## reduce：计算数组中的元素，返回一个值，如求和
 
-### 语法
+从左到右为每个数组元素执行一次回调函数，并把上次回调函数的返回值放在一个暂存器中传给下次回调函数，并返回最后一次回调函数的返回值。 
+
+**语法**
+
+```
+arr.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue])
+```
+
+**参数**
+
+`callback`
+
+执行数组中每个值 (如果没有提供 `initialValue则第一个值除外`)的函数，包含四个参数：
+
+
+- `accumulator`
+
+  累计器累计回调的返回值; 它是上一次调用回调时返回的累积值，或`initialValue`（见于下方）。 
+
+- `currentValue`
+
+  数组中正在处理的元素。
+
+- `index` 可选
+
+  数组中正在处理的当前元素的索引。 如果提供了`initialValue`，则起始索引号为0，否则从索引1起始。
+
+- `array`可选
+
+  调用`reduce()`的数组
+
+`initialValue`可选
+
+作为第一次调用 `callback`函数时的第一个参数的值。 如果没有提供初始值，则将使用数组中的第一个元素。 在没有初始值的空数组上调用 reduce 将报错。
+
+**返回值**
+
+函数累计处理的结果 
+
+**描述**
+
+`reduce`为数组中的每一个元素依次执行`callback`函数，不包括数组中被删除或从未被赋值的元素 。
+
+回调函数第一次执行时，`accumulator` 和`currentValue`的取值有两种情况：如果调用`reduce()`时提供了`initialValue`，`accumulator`取值为`initialValue`，`currentValue`取数组中的第一个值；如果没有提供 `initialValue`，那么`accumulator`取数组中的第一个值，`currentValue`取数组中的第二个值。 
+
+**注意：**如果没有提供`initialValue`，reduce 会从索引1的地方开始执行 callback 方法，跳过第一个索引。如果提供`initialValue`，从索引0开始。 
+
+如果数组为空且没有提供`initialValue`，会抛出[`TypeError`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError) 。如果数组仅有一个元素（无论位置如何）并且没有提供`initialValue`， 或者有提供`initialValue`但是数组为空，那么此唯一值将被返回并且`callback`不会被执行。 
+
+提供初始值通常更安全，正如下面的例子，如果没有提供`initialValue`，则可能有四种输出：
+
+```js
+var maxCallback = ( acc, cur ) => Math.max( acc.x, cur.x );
+var maxCallback2 = ( max, cur ) => Math.max( max, cur );
+
+// reduce() 没有初始值
+[ { x: 2 }, { x: 22 }, { x: 42 } ].reduce( maxCallback ); // NaN
+[ { x: 2 }, { x: 22 }            ].reduce( maxCallback ); // 22
+[ { x: 2 }                       ].reduce( maxCallback ); // { x: 2 }
+[                                ].reduce( maxCallback ); // TypeError
+
+// map/reduce; 这是更好的方案，即使传入空数组或更大数组也可正常执行
+[ { x: 22 }, { x: 42 } ].map( el => el.x )
+                        .reduce( maxCallback2, -Infinity );
+```
+
+**reduce如何运行**
+
+```js
+[0, 1, 2, 3, 4].reduce(function(accumulator, currentValue, currentIndex, array){
+  return accumulator + currentValue;
+});
+```
+
+ callback 被调用四次，每次调用的参数和返回值如下表： 
+
+| `callback`  | `accumulator` | `currentValue` | `currentIndex` | `array`           | return value |
+| ----------- | ------------- | -------------- | -------------- | ----------------- | ------------ |
+| first call  | `0`           | `1`            | `1`            | `[0, 1, 2, 3, 4]` | `1`          |
+| second call | `1`           | `2`            | `2`            | `[0, 1, 2, 3, 4]` | `3`          |
+| third call  | `3`           | `3`            | `3`            | `[0, 1, 2, 3, 4]` | `6`          |
+| fourth call | `6`           | `4`            | `4`            | `[0, 1, 2, 3, 4]` | `10`         |
+
+由`reduce`返回的值将是最后一次回调返回值（10）。 
+
+## reduceRight：与reduce类似，但执行方向相反
+
+从右到左为每个数组元素执行一次回调函数，并把上次回调函数的返回值放在一个暂存器中传给下次回调函数，并返回最后一次回调函数的返回值。 
+
+首次回调函数调用时的情况可汇总为此表：
+
+| 数组内元素数量 | 是否提供 `initialValue` | 结果                                                         |
+| -------------- | ----------------------- | ------------------------------------------------------------ |
+| > 1            | 未提供                  | `accumulator` 为数组中（下略）最后一个元素 `currentValue` 为倒数第二个元素 |
+|                | 提供                    | `accumulator` 为 `initialValue` `currentValue` 为最后一个元素 |
+| = 1            | 未提供                  | 直接返回数组中的唯一一个元素                                 |
+|                | 提供                    | 直接返回 `initialValue`                                      |
+| = 0            | 未提供                  | 抛出 `TypeError` 错误                                        |
+
+## keys：数组索引键
+
+**语法**
 
 ```js
 arr.keys()
 ```
 
-### 返回值 
+**返回值** 
 
 一个新的 [`Array`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Array) 迭代器对象。
 
-### 示例
+**示例**
 
-#### 索引迭代器会包含那些没有对应元素的索引
+索引迭代器会包含那些没有对应元素的索引
 
 ```js
 var arr = ["a", , "c"];
@@ -608,11 +717,86 @@ console.log(sparseKeys); // ['0', '2']
 console.log(denseKeys);  // [0, 1, 2]
 ```
 
+## values：数组每个索引的值 
+
+**语法**
+
+```js
+arr.values()
+```
+
+**返回值**
+
+一个新的 [`Array`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Array) 迭代对象。
+
+**示例**
+
+使用 `for...of` 循环进行迭代
+
+```js
+let arr = ['w', 'y', 'k', 'o', 'p'];
+let eArr = arr.values();
+
+for (let letter of eArr) {
+  console.log(letter);
+} //"w" "y "k" "o" "p"
+```
+
+**Array.prototype.values** 是 **Array.prototype[Symbol.iterator]** 的默认实现。
+
+```js
+Array.prototype.values === Array.prototype[Symbol.iterator]  // true 
+```
+
+使用 `.next()` 迭代
+
+```js
+var arr = ['a', 'b', 'c', 'd', 'e'];
+var iterator = arr.values(); 
+iterator.next();               // Object { value: "a", done: false }
+iterator.next().value;         // "b"
+iterator.next()["value"];      // "c"
+iterator.next();               // Object { value: "d", done: false }
+iterator.next();               // Object { value: "e", done: false }
+iterator.next();               // Object { value: undefined, done: true } 
+iteraroe.next().value;         // undefined
+```
+
+一次性：数组迭代器是一次性的，或者说临时对象
+
+例子：
+
+```js
+var arr = ['a', 'b', 'c', 'd', 'e'];
+ var iterator = arr.values();
+ for (let letter of iterator) {
+ console.log(letter); 
+} //"a" "b" "c" "d"
+for (let letter of iterator) {
+console.log(letter);
+} // undefined
+```
+
+**解释:** 当 `next().done=true` 或 `currentIndex>length` 时， `for..of` 循环结束。
+
+**值**: 数组迭代器中存储的是原数组的地址，而不是数组元素值。
+
+```js
+var arr = ['a', 'b', 'c', 'd', 'e']; 
+var iterator = arr.values();
+console.log(iterator); // Array Iterator {  }
+iterator.next().value; // "a"
+arr[1] = 'n';                 
+iterator.next().value; //  "n"
+```
+
+如果数组中元素改变，那么迭代器的值也会改变
+
 ## filter：数组过滤
 
 `**filter()**` 方法创建一个新数组, 其包含通过所提供函数实现的测试的所有元素。  
 
-### 描述
+**描述**
 
 `filter` 为数组中的每个元素调用一次 `callback` 函数，并利用所有使得 `callback` 返回 true 或[等价于 true 的值](https://developer.mozilla.org/zh-CN/docs/Glossary/Truthy)的元素创建一个新数组。`callback` 只会在已经赋值的索引上被调用，对于那些已经被删除或者从未被赋值的索引不会被调用。那些没有通过 `callback` 测试的元素会被跳过，不会被包含在新数组中。
 
@@ -628,9 +812,9 @@ console.log(denseKeys);  // [0, 1, 2]
 
 `filter` 遍历的元素范围在第一次调用 `callback` 之前就已经确定了。在调用 `filter` 之后被添加到数组中的元素不会被 `filter` 遍历到。如果已经存在的元素被改变了，则他们传入 `callback` 的值是 `filter` 遍历到它们那一刻的值。被删除或从来未被赋值的元素不会被遍历到。
 
-### 示例
+**示例**
 
-#### 筛选排除所有较小的值
+筛选排除所有较小的值
 
 下例使用 `filter` 创建了一个新数组，该数组的元素由原数组中值大于 10 的元素组成。
 
@@ -642,7 +826,7 @@ var filtered = [12, 5, 8, 130, 44].filter(isBigEnough);
 // filtered is [12, 130, 44] 
 ```
 
-#### 在数组中搜索
+在数组中搜索
 
 下例使用 `filter()` 根据搜索条件来过滤数组内容。
 
@@ -666,7 +850,7 @@ console.log(filterItems('an')); // ['banana', 'mango', 'orange']
 
 `**every()**` 方法测试一个数组内的所有元素是否都能通过某个指定函数的测试。它返回一个布尔值。 
 
-### 描述
+**描述**
 
 `every` 方法为数组中的每个元素执行一次 `callback` 函数，直到它找到一个会使 `callback` 返回 `false`的元素。如果发现了一个这样的元素，`every` 方法将会立即返回 `false`。否则，`callback` 为每一个元素返回 `true`，`every` 就会返回 `true`。`callback` 只会为那些已经被赋值的索引调用。不会为那些被删除或从未被赋值的索引调用。
 
@@ -680,9 +864,9 @@ console.log(filterItems('an')); // ['banana', 'mango', 'orange']
 
 `every` 和数学中的"所有"类似，当所有的元素都符合条件才会返回`true`。正因如此，若传入一个空数组，无论如何都会返回 `true`。（这种情况属于[无条件正确](http://en.wikipedia.org/wiki/Vacuous_truth)：正因为一个[空集合](https://en.wikipedia.org/wiki/Empty_set#Properties)没有元素，所以它其中的所有元素都符合给定的条件。)
 
-### 示例
+**示例**
 
-#### 检测所有数组元素的大小
+检测所有数组元素的大小
 
 下例检测数组中的所有元素是否都大于 10。
 
@@ -698,7 +882,7 @@ function isBigEnough(element, index, array) {
 
 `**some()**` 方法测试数组中是不是至少有1个元素通过了被提供的函数测试。它返回的是一个Boolean类型的值。 
 
-### 描述
+**描述**
 
 `some()` 为数组中的每一个元素执行一次 `callback` 函数，直到找到一个使得 callback 返回一个“真值”（即可转换为布尔值 true 的值）。如果找到了这样一个值，`some()` 将会立即返回 `true`。否则，`some()` 返回 `false`。`callback` 只会在那些”有值“的索引上被调用，不会在那些被删除或从来未被赋值的索引上调用。
 
@@ -710,9 +894,9 @@ function isBigEnough(element, index, array) {
 
 `some()` 遍历的元素的范围在第一次调用 `callback`. 前就已经确定了。在调用 `some()` 后被添加到数组中的值不会被 `callback` 访问到。如果数组中存在且还未被访问到的元素被 `callback` 改变了，则其传递给 `callback` 的值是 `some()` 访问到它那一刻的值。已经被删除的元素不会被访问到。
 
-### 示例
+**示例**
 
-#### 测试数组元素的值
+测试数组元素的值
 
 下面的例子检测在数组中是否有元素大于 10。
 
@@ -725,11 +909,114 @@ function isBiggerThan10(element, index, array) {
 [12, 5, 8, 1, 4].some(isBiggerThan10); // true
 ```
 
+## find：查找元素
+
+找到第一个满足测试函数的元素并返回那个元素的值，如果找不到，则返回 `undefined`。 
+
+**语法**
+
+```
+arr.find(callback[, thisArg])
+```
+
+**参数**
+
+`callback`
+
+- `element`
+
+  当前遍历到的元素。
+
+- `index`可选
+
+  当前遍历到的索引。
+
+- `array`可选
+
+  数组本身。
+
+`thisArg`可选
+
+执行回调时用作`this` 的对象。
+
+**返回值**
+
+数组中第一个满足所提供测试函数的元素的值，否则返回 [`undefined`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/undefined)。 
+
+**示例**
+
+```js
+var inventory = [
+    {name: 'apples', quantity: 2},
+    {name: 'bananas', quantity: 0},
+    {name: 'cherries', quantity: 5}
+];
+
+function findCherries(fruit) { 
+    return fruit.name === 'cherries';
+}
+
+console.log(inventory.find(findCherries)); // { name: 'cherries', quantity: 5 }
+```
+
+## findeIndex：查找元素的索引
+
+找到第一个满足测试函数的元素并返回那个元素的索引，如果找不到，则返回 `-1`。 
+
+**语法**
+
+```
+arr.findIndex(callback[, thisArg])
+```
+
+**参数**
+
+`callback`
+
+- `element`
+
+  当前元素。
+
+- `index`
+
+  当前元素的索引。
+
+- `array`
+
+  调用`findIndex`的数组。
+
+`thisArg`
+
+可选。执行`callback`时作为`this`对象的值.
+
+**返回值**
+
+ 数组中通过提供测试函数的第一个元素的**索引**。否则，返回-1 
+
+**示例**
+
+查找数组中素数的元素的索引（如果不存在素数，则返回-1）。 
+
+```js
+function isPrime(element, index, array) {
+  var start = 2;
+  while (start <= Math.sqrt(element)) {
+    if (element % start++ < 1) {
+      return false;
+    }
+  }
+  return element > 1;
+}
+
+console.log([4, 6, 8, 12].findIndex(isPrime)); // -1, not found
+console.log([4, 6, 7, 12].findIndex(isPrime)); // 2
+```
+
 ## **entries**：返回一个新的**Array Iterator**对象 
 
-### 示例
+**示例**
 
-#### 1、 Array Iterator
+1、 Array Iterator
 
 ```js
 var arr = ["a", "b", "c"];
@@ -744,7 +1031,7 @@ console.log(iterator);
 */
 ```
 
-#### 2、iterator.next()
+2、iterator.next()
 
 ```js
 var arr = ["a", "b", "c"]; 
@@ -763,7 +1050,7 @@ console.log(iterator.next());
 // next.value是一个["key","value"]的数组，是返回的迭代器中的元素值。
 ```
 
-#### 3、iterator.next方法运行
+3、iterator.next方法运行
 
 ```js
 var arr = ["a", "b", "c"];
@@ -783,7 +1070,7 @@ for(var i=0; i< arr.length+1; i++){    // 注意，是length+1，比数组的长
 console.log(a);                         // 遍历完毕，输出next.value的数组
 ```
 
-#### 4、二维数组按行排序
+4、二维数组按行排序
 
 ```js
 function sortArr(arr) {
@@ -814,7 +1101,7 @@ sortArr(arr);
 */
 ```
 
-#### 5、使用[for…of](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of) 循环
+5、使用[for…of](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of) 循环
 
 ```js
 var arr = ["a", "b", "c"];
