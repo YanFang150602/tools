@@ -1,3 +1,4 @@
+https://blog.csdn.net/younger_china/article/details/53131071
 # 介绍
 1     RPM是什么
 RPM 前是Red HatPackage Manager 的缩写，本意是Red Hat 软件包管理，顾名思义是Red Hat 贡献出来的软件包管理；现在应为RPM Package Manager的缩写。在Fedora、RedHat、Mandriva、SUSE、YellowDog等主流发行版本，以及在这些版本基础上二次开发出来的发行版采用； RPM包中除了包括程序运行时所需要的文件，也有其它的文件；一个RPM包中的应用程序，有时除了自身所带的附加文件保证其正常以外，还需要其它特定版本文件，这就是软件包的依赖关系。
