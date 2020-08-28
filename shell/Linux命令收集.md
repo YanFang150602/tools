@@ -1,3 +1,231 @@
+# sed 
+
+sed 命令是利用脚本来处理文本文件。 
+
+**sed -[]常用的参数及其作用：**
+-n ：安静模式。在sed的一般用法中，所有来自文件中的数据都会被列出到屏幕上，如果加上-n，则只有经过sed特殊处理的那行（或操作）才会被列出来。
+-e ：直接下命令行模式上进行sed的动作编辑。
+-f ：直接将sed的动作写在一个文件内，-f filename 则可以执行file内的sed动作。
+-r ：sed的动作支持的是扩展型正则表达式的语法（默认是基础正则表达式的语法）。
+-i ：可直接对源文件内容进行修改。**危险操作**
+-h或–help：显示帮助；
+-V或–version：显示版本信息
+
+**function有下面这些参数**
+i：插入，在目标行的上面新增一行。
+a：插入，在目标行的下面新增一行。
+d：删除所选行。
+p：打印，也就是将某个选择的数据打印出来，通常参数-p与参数-n搭配使用。
+s：替换，可以直接进行替换的工作。
+c：替换，c的后面可以接替字符串，这些字符串可以替换n1，n2之间的行。
+w：写并追加模板块到file末尾。
+W：写并追加模板块的第一行到file末尾。
+!：表示后面的命令对所有没有被选定的行发生作用。
+=：打印当前行号; # 把注释扩展到下一个换行符以前。
+**以上参数皆不改变原文件内容**
+
+**sed替换标记**
+g ：表示行内全面替换;
+x： 表示互换模板块中的文本和缓冲区中的文本;
+y ：表示把一个字符翻译为另外的字符（但是不用于正则表达式）;
+\1： 子串匹配标记;
+& ：已匹配字符串标记;
+
+**sed元字符集**
+^ 匹配行开始，如：/^ sed/匹配所有以sed开头的行
+$ 匹配行结束，如：/sed$/匹配所有以sed结尾的行;
+.： 匹配一个非换行符的任意字符，如：/s.d/匹配s后接一个任意字符，后是d;
+*：匹配0个或多个字符，如：/*sed/匹配所有模板是一个或多个空格后紧跟sed的行;
+[] 匹配一个指定范围内的字符，如/[ss]ed/匹配sed和Sed;
+[^] 匹配一个不在指定范围内的字符，如：/[^A-RT-Z]ed/匹配不包含A-R和T-Z的一个字母开头，紧跟ed的行;
+\ (…\ ) 匹配子串，保存匹配的字符，如s/(love)able/\1rs，loveable被替换成lovers;
+& 保存搜索字符用来替换其他字符，如s/love/&/，love这成love;
+< 匹配单词的开始，如:/\
+\> 匹配单词的结束，如/love>/匹配包含以love结尾的单词的行;
+x{m} 重复字符x，m次，如：/0{5}/匹配包含5个0的行;
+x{m,} 重复字符x，至少m次，如：/0{5,}/匹配至少有5个0的行; x{m,n} 重复字符x，至少m次，不多于n次，如：/0{5,10}/匹配5~10个0的行;
+
+**各参数的使用** 
+
+对function参数的使用
+
+打印行 : 
+
+-n 'n1 p’		打印第n行，且原文件内容不变； 
+
+-n ‘n1,n2 p’	打印n1到n2行，且原文件内容不变 
+
+```shell
+$cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+$sed -n '2 p' /etc/passwd
+bin:x:1:1:bin:/bin:/sbin/nologin
+$sed -n '2p' /etc/passwd
+bin:x:1:1:bin:/bin:/sbin/nologin
+$sed -n '2,5p' /etc/passwd
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+```
+
+删除行：
+
+`-n 'n1 d' `		删除第n行，且原文件内容不变； 
+
+`-n 'n1,n2 d' `	删除n1到n2行，且原文件内容不变 
+
+插入行： 
+
+`'ni 内容'' `		 第n行前添加一行内容，且原文件内容不变 ； 
+
+`'na 内容'`		 第n行后添加一行内容，且原文件内容不变 
+
+替换行：
+
+`'nc 新内容' `	将第n行替换成新内容，且原文件内容不变 
+
+替换字符
+
+`-n 's/old/new/p' `	将文件中每行的第一个old字符换成new字符，打印出只发生变化的行，且源文件内容不变。
+
+`-n 's/old/new/pg'`	将文件中全部的old字符换成new字符，打印出只发生变化的行，且源文件内容不变。  
+
+**对sed动作参数的使用**
+
+直接对源文件内容进行操作（-i） 
+
+```shell
+$cat test.txt
+Hello World!
+my name is word.
+testyourname!
+$sed -i 's/n/N/g' test.txt
+$cat test.txt
+Hello World!
+my Name is word.
+testyourName!
+```
+
+不对源文件内容进行操作（-e） 
+
+```shell
+$cat test.txt
+Hello World!
+my name is word.
+testyourname!
+$sed -e 's/n/N/g' test.txt
+Hello World!
+my Name is word.
+testyourName!
+$cat test.txt
+Hello World!
+my name is word.
+testyourname!
+```
+
+**多点编辑**
+
+一条sed命令，删除/etc/passwd第三行到末尾的数据，并把bash替换为blueshell
+
+```shell
+#nl 可以将输出的文件内容自动的加上行号
+$nl /etc/passwd | sed -e '3,$d' -e 's/bash/blueshell/'
+1  root:x:0:0:root:/root:/bin/blueshell
+2  daemon:x:1:1:daemon:/usr/sbin:/bin/sh
+```
+
+-e表示多点编辑，第一个编辑命令删除/etc/passwd第三行到末尾的数据，第二条命令搜索bash替换为blueshell。
+
+其他示例
+
+```shell
+#删除1-3行
+$sed '1,3 d' sed_text
+#删除带有Lane的行
+$sed '/Lane/d' sed_text
+#打印5-10行
+$sed -n '5,10 p' sed_text
+#打印带有11或12的行
+$sed -n '/:1[12]\//p' sed_text
+#将所有包含Jose的行都替换为JOSE HAS RETIRED，并且打印出来
+$sed -n 's/Jose/JOSE HAS RETIRED/p' sed_text
+#删除所有空行，\s*表示0个以上空格
+$sed '/^\s*$/ d' sed_text
+#利用 sed 将 regular_express.txt 内每一行结尾若为 . 则换成 !
+$sed -i 's/\.$/\!/g' regular_express.txt
+#利用 sed 直接在 regular_express.txt 最后一行加入 # This is a test，$ 代表的是最后一行
+$sed -i '$a # This is a test' regular_express.txt
+```
+
+
+
+# export 
+
+export 命令用于设置或显示环境变量。 
+
+**语法**
+
+```
+export [-fnp][变量名称]=[变量设置值]
+```
+
+**参数说明**：
+
+- -f 　代表[变量名称]中为函数名称。
+- -n 　删除指定的变量。变量实际上并未删除，只是不会输出到后续指令的执行环境中。
+- -p 　列出所有的shell赋予程序的环境变量。
+
+export设置环境变量是暂时的，只在本次登录中有效。
+
+通过2种方式，使命令长久有效
+
+第一种：
+
+修改profile文件：
+
+```shell
+$ sudo gedit /etc/profile     #该修改将对所有用户都起作用。
+```
+
+在文件里面加入:
+
+```shell
+export PATH=$PATH:/opt/ros/bin
+```
+
+```shell
+# 生效，否则新加的环境变量不会生效
+$ source /etc/profile
+```
+
+这个在我们的机器上是大家共用的，建议不修改这个！
+
+第二种：
+
+只修改自己根路径下的
+
+修改自己home路径下的 ~/.bashrc 或 ~/.bash_profile 文件：
+
+```shell
+$ gedit ~/.bashrc  #只对本用户起作用。
+```
+
+在文件里面加入：
+
+```
+export PATH=$PATH:/opt/ros/bin
+```
+
 # tar
 
 tar命令用于备份文件。
@@ -753,3 +981,77 @@ mkdir AAA
 ```shell
 mkdir -p BBB/Test
 ```
+# linux中export与source的作用
+
+首先说明两个概念：
+
+父shell与子shell，从shellA中启动一个shell，称之为shellB。 shellA为父shell，shellB为子shell。
+
+最容易理解的情况就是在一个shell中执行一个gnome-terminal命令（不同桌面环境命令不一样），弹出一个新的shell
+
+最常见的情况是在当前shell下执行脚本，这个脚本实际上是在子shell中执行的
+
+这里用最常见的情况举例：在当前shell下执行脚本
+
+现在有三个脚本
+
+```shell
+#exp1.sh
+var="hello,world"
+```
+
+```shell
+#exp2.sh
+var="hello,world"
+export var
+```
+
+```shell
+#test.sh
+echo $var
+```
+
+实验1：
+
+```shell
+$ source exp1.sh
+$ echo $var
+hello,world
+$ bash test.sh
+```
+
+实验2：
+
+```shell
+$ source exp2.sh
+$ echo $var
+hello,world
+$ bash test.sh
+hello,world
+```
+
+可以看到在当前shell下执行echo $var是没有任何问题的，但是执行bash test.sh时，实验1是没有任何输出（找不到var这个变量）。实验2 echo $var也是没有任何问题的，因为实验2中exp2.sh加入了export，所以var变成了环境变量，var对子shell是可见的。而实验1中由于没有export var，所以var是个局部变量，并不能被子shell看到。
+
+ linux中在 profile 或者 bashrc 或者其他类似的文件中设置环境变量时（比如PATH），如果没有export，那么只能在直接启动的shell中起作用，如果在当前shell下运行脚本或者直接启动一个子shell，因为实际上是局部变量，子shell看不见的。
+
+**Linux source命令：**
+
+通常用法：source filepath 或 . filepath
+
+功能：使当前shell读入路径为filepath的shell文件并依次执行文件中的所有语句，通常用于重新执行刚修改的初始化文件，使之立即生效，而不必注销并重新登录。例如，当我们修改了/etc/profile文件，并想让它立刻生效，而不用重新登录，就可以使用source命令，如source /etc/profile。
+
+source命令(从 C Shell 而来)是bash shell的内置命令；点命令(.)，就是个点符号(从Bourne Shell而来)是source的另一名称。这从用法中也能看出来。
+
+**source filepath 与 sh filepath 、./filepath的区别****：**
+
+1. 当shell脚本具有可执行权限时，用sh filepath与./filepath是没有区别的。./filepath是因为当前目录没有在PATH中，所有"."是用来表示当前目录的。
+2. sh filepath 会重新建立一个子shell，在子shell中执行脚本里面的语句，该子shell继承父shell的环境变量，但子shell是新建的，其改变的变量不会被带回父shell，除非使用export。
+3. source filename其实只是简单地读取脚本里面的语句依次在当前shell里面执行，没有建立新的子shell。那么脚本里面所有新建、改变变量的语句都会保存在当前shell里面。
+
+**举例说明：**
+
+1. 新建一个test.sh脚本，内容为:A=1；
+2. 修改其可执行权限：chmod +x test.sh；
+3. 运行sh test.sh后，echo $A，显示为空，因为A=1并未传回给当前shell；
+4. 运行./test.sh后，也是一样的效果；
+5. 运行source test.sh 或者 . test.sh，然后echo $A，则会显示1，说明A=1的变量在当前shell中；
