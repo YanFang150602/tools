@@ -30,6 +30,7 @@ echo $your_name
 your_name="alibaba"
 echo $your_name
 ```
+
 反斜杠允许shell脚本将解释为实际的美元符号，而不是变量。
 
 ```shell
@@ -394,6 +395,71 @@ fi
 | ------ | ---------- | ------------------------------------------ |
 | &&     | 逻辑的 AND | [[ $a -lt 100 && $b -gt 100 ]] 返回 false  |
 | \|\|   | 逻辑的 OR  | [[ $a -lt 100 \|\| $b -gt 100 ]] 返回 true |
+| -a     | 逻辑的 AND | [ $a -lt 100 -a $b -gt 100 ]返回false      |
+| -o     | 逻辑的 OR  | [ $a -lt 100 -o $b -gt 100 ] 返回 true     |
+| !      | 逻辑非     |                                            |
+
+## 字符串运算符
+
+下表列出了常用的字符串运算符，假定变量 a 为 "abc"，变量 b 为 "efg"：
+
+| 运算符 | 说明                                         | 举例                       |
+| ------ | -------------------------------------------- | -------------------------- |
+| =      | 检测两个字符串是否相等，相等返回 true。      | [  $a = $b  ] 返回 false。 |
+| !=     | 检测两个字符串是否相等，不相等返回 true。    | [  $a != $b  ] 返回 true。 |
+| -z     | 检测字符串长度是否为0，为0返回 true。        | [  -z $a  ] 返回 false。   |
+| -n     | 检测字符串长度是否不为 0，不为 0 返回 true。 | [  -n "$a"  ] 返回 true。  |
+| $      | 检测字符串是否为空，不为空返回 true。        | [  $a ] 返回 true。        |
+
+```shell
+#!/bin/bash
+# author:菜鸟教程
+# url:www.runoob.com
+a="abc"
+b="efg"
+if [ $a = $b ]
+then
+   echo "$a = $b : a 等于 b"
+else
+   echo "$a = $b: a 不等于 b"
+fi
+
+if [ $a != $b ]
+then
+   echo "$a != $b : a 不等于 b"
+else
+   echo "$a != $b: a 等于 b"
+fi
+
+if [ -z $a ]
+then
+   echo "-z $a : 字符串长度为 0"
+else
+   echo "-z $a : 字符串长度不为 0"
+fi
+
+if [ -n "$a" ]
+then
+   echo "-n $a : 字符串长度不为 0"
+else
+   echo "-n $a : 字符串长度为 0"
+fi
+
+if [ $a ]
+then
+   echo "$a : 字符串不为空"
+else
+   echo "$a : 字符串为空"
+fi
+```
+
+```
+abc = efg: a 不等于 b
+abc != efg : a 不等于 b
+-z abc : 字符串长度不为 0
+-n abc : 字符串长度不为 0
+abc : 字符串不为空
+```
 
 ## 文件测试运算符
 
@@ -561,6 +627,19 @@ $ ./test.sh 1 2 3
 3
 ```
 
+# Shell中[[]]和[]
+
+[]和test，两者是一样的，在命令行里test expr和[ expr ]的效果相同。test的三个基本作用是判断文件、判断字符
+
+串、判断整数。支持使用与或非将表达式连接起来。要注意的有：
+
+- test中可用的比较运算符只有 == 和 != ，两者都是用于字符串比较的，不可用于整数比较！整数比较只能使用-eq, -gt这种形式。**无论是`字符串比较`还是`整数比较`都千万不要使用大于号小于号**。当然，如果你实在想用也是可以的，对于字符串比较可以使用尖括号的转义形式， 如果比较"ab"和"bc"：[ ab \< bc ]，结果为真，也就是返回状态为0。然后是 [[ ]] ，这是内置在shell中的一个命令，它就比刚才说的test强大的多了。支持字符串的模式匹配（使用 =~ 操作符时甚至支持shell的正则表达式）。简直强大的令人发指！逻辑组合可以不使用test的-a -o，而使用&& ||这样更亲切的形式。
+
+- 字符串比较时可以把右边的作为一个模式（这是右边的字符串不加双引号的情况下。如果右边的字符串加了双引号，则认为是一个文本字符串。），而不仅仅是一个字符串，比如 [[ hello == hell? ]]，结果为真。另外要注意的是，**使用 [] 和 [[]] 的时候，不要吝啬空格**，每一项两边都要有空格，[[ 1 == 2 ]] 的结果为“假”，但 [[ 1==2 ]] 的结果为“真”！后一种显然是错的
+- 最后就是 let 和 (())，两者也是一样的(或者说基本上是一样的，双括号比let稍弱一些)。主要进行算术运算(上面的两个都不行)，也比较适合进 行整数比较，可以直接使用熟悉的 <, > 等比较运算符。可以直接使用变量名如var 而不需要 $var 这样的形式。支持分号隔开的多个表达式
+- [[]] 可以直接使用+ - * / %
+- 使用算术扩展最好用 (( 99+1 == 100 )) ，而不要使用[[ 99+1 -eq 100 ]] 。
+
 # Shell中函数返回值
 
 **语法：**
@@ -606,7 +685,7 @@ fi
 
 ## if else
 
-### if
+**if**
 
 if 语句语法格式：
 
@@ -628,7 +707,7 @@ if [ $(ps -ef | grep -c "ssh") -gt 1 ]; then echo "true"; fi
 
 末尾的fi就是if倒过来拼写，后面还会遇到类似的。
 
-### if else
+**if else**
 
 if else 语法格式：
 
@@ -644,7 +723,7 @@ else
 fi
 ```
 
-### if else-if else
+**if else-if else**
 
 if else-if else 语法格式：
 
@@ -750,7 +829,7 @@ This is a string
 
 ## case in语句详解
 
-语法：
+**语法**
 
 ```shell
 case expression in
@@ -784,7 +863,7 @@ case 会将 expression  的值与 pattern1、pattern2、pattern3 逐个进行匹
 
 除最后一个分支外（这个分支可以是普通分支，也可以是`*)`分支），其它的每个分支都必须以`;;`结尾，`;;`代表一个分支的结束，表示 break ，不写的话会有语法错误。最后一个分支可以写`;;`，也可以不写，因为无论如何，执行到 esac 都会结束整个 case in 语句。
 
-### case in 和正则表达式
+**case in 和正则表达式**
 
 case in 的 pattern 部分支持简单的正则表达式，具体来说，可以使用以下几种格式：
 
@@ -799,7 +878,7 @@ case in 的 pattern 部分支持简单的正则表达式，具体来说，可以
 
 在循环过程中，有时候需要在未达到循环结束条件时强制跳出循环，Shell使用两个命令来实现该功能：break和continue。
 
-### break命令
+**break命令**
 
 break命令允许跳出所有循环（终止执行后面的所有循环）。
 
@@ -828,7 +907,7 @@ done
 你输入的数字不是 1 到 5 之间的! 游戏结束
 ```
 
-### continue
+**continue**
 
 continue命令与break命令类似，只有一点差别，它不会跳出所有循环，仅仅跳出当前循环。
 
@@ -952,7 +1031,7 @@ command1 < infile > outfile
 
 同时替换输入和输出，执行command1，从文件infile读取内容，然后将输出写入到outfile中。
 
-### 重定向深入讲解
+**重定向深入讲解**
 
 一般情况下，每个 Unix/Linux 命令运行时都会打开三个文件：
 
@@ -1014,379 +1093,6 @@ $ command > /dev/null 2>&1
 >
 > 这里的 **2** 和 **>** 之间不可以有空格，**2>** 是一体的时候才表示错误输出。
 
-# Linux awk 命令
-
-AWK 是一种处理文本文件的语言，是一个强大的文本分析工具。
-
-## 语法
-
-```shell
-awk [选项参数] 'script' var=value file(s)
-或
-awk [选项参数] -f scriptfile var=value file(s)
-```
-
-**选项参数说明：**
-
-- -F fs or --field-separator fs
-  指定输入文件折分隔符，fs是一个字符串或者是一个正则表达式，如-F:。
-- -v var=value or --asign var=value
-  赋值一个用户定义变量。
-- -f scripfile or --file scriptfile
-  从脚本文件中读取awk命令。
-- -mf nnn and -mr nnn
-  对nnn值设置内在限制，-mf选项限制分配给nnn的最大块数目；-mr选项限制记录的最大数目。这两个功能是Bell实验室版awk的扩展功能，在标准awk中不适用。
-- -W compact or --compat, -W traditional or --traditional
-  在兼容模式下运行awk。所以gawk的行为和标准的awk完全一样，所有的awk扩展都被忽略。
-- -W copyleft or --copyleft, -W copyright or --copyright
-  打印简短的版权信息。
-- -W help or --help, -W usage or --usage
-  打印全部awk选项和每个选项的简短说明。
-- -W lint or --lint
-  打印不能向传统unix平台移植的结构的警告。
-- -W lint-old or --lint-old
-  打印关于不能向传统unix平台移植的结构的警告。
-- -W posix
-  打开兼容模式。但有以下限制，不识别：/x、函数关键字、func、换码序列以及当fs是一个空格时，将新行作为一个域分隔符；操作符**和**=不能代替^和^=；fflush无效。
-- -W re-interval or --re-inerval
-  允许间隔正则表达式的使用，参考(grep中的Posix字符类)，如括号表达式[[:alpha:]]。
-- -W source program-text or --source program-text
-  使用program-text作为源代码，可与-f命令混用。
-- -W version or --version
-  打印bug报告信息的版本。
-
-log.txt文本内容如下：
-
-```
-2 this is a test
-3 Are you like awk
-This's a test
-10 There are orange,apple,mongo
-```
-
-用法一：
-
-```shell
-awk '{[pattern] action}' {filenames}   # 行匹配语句 awk '' 只能用单引号
-```
-
-```
-# 每行按空格或TAB分割，输出文本中的1、4项
- $ awk '{print $1,$4}' log.txt
- ---------------------------------------------
- 2 a
- 3 like
- This's
- 10 orange,apple,mongo
- # 格式化输出
- $ awk '{printf "%-8s %-10s\n",$1,$4}' log.txt
- ---------------------------------------------
- 2        a
- 3        like
- This's
- 10       orange,apple,mongo
-```
-
-用法二：
-
-```shell
-awk -F  #-F相当于内置变量FS, 指定分割字符
-```
-
-实例：
-
-```shell
-# 使用","分割
- $  awk -F, '{print $1,$2}'   log.txt
- ---------------------------------------------
- 2 this is a test
- 3 Are you like awk
- This's a test
- 10 There are orange apple
- # 或者使用内建变量
- $ awk 'BEGIN{FS=","} {print $1,$2}'     log.txt
- ---------------------------------------------
- 2 this is a test
- 3 Are you like awk
- This's a test
- 10 There are orange apple
- # 使用多个分隔符.先使用空格分割，然后对分割结果再使用","分割
- $ awk -F '[ ,]'  '{print $1,$2,$5}'   log.txt
- ---------------------------------------------
- 2 this test
- 3 Are awk
- This's a
- 10 There apple
-```
-
-用法三：
-
-```shell
-awk -v  # 设置变量
-```
-
-实例：
-
-```shell
- $ awk -va=1 '{print $1,$1+a}' log.txt
- ---------------------------------------------
- 2 3
- 3 4
- This's 1
- 10 11
- $ awk -va=1 -vb=s '{print $1,$1+a,$1b}' log.txt
- ---------------------------------------------
- 2 3 2s
- 3 4 3s
- This's 1 This'ss
- 10 11 10s
-```
-
-用法四：
-
-```shell
-awk -f {awk脚本} {文件名}
-```
-
-实例：
-
-```
- $ awk -f cal.awk log.txt
-```
-
-## 运算符
-
-| 运算符                  | 描述                             |
-| ----------------------- | -------------------------------- |
-| = += -= *= /= %= ^= **= | 赋值                             |
-| ?:                      | C条件表达式                      |
-| \|\|                    | 逻辑或                           |
-| &&                      | 逻辑与                           |
-| ~ 和 !~                 | 匹配正则表达式和不匹配正则表达式 |
-| < <= > >= != ==         | 关系运算符                       |
-| 空格                    | 连接                             |
-| + -                     | 加，减                           |
-| * / %                   | 乘，除与求余                     |
-| + - !                   | 一元加，减和逻辑非               |
-| ^ ***                   | 求幂                             |
-| ++ --                   | 增加或减少，作为前缀或后缀       |
-| $                       | 字段引用                         |
-| in                      | 数组成员                         |
-
-过滤第一列大于2的行
-
-```shell
-$ awk '$1>2' log.txt    #命令
-#输出
-3 Are you like awk
-This's a test
-10 There are orange,apple,mongo
-```
-
-过滤第一列等于2的行
-
-```shell
-$ awk '$1==2 {print $1,$3}' log.txt    #命令
-#输出
-2 is
-```
-
-过滤第一列大于2并且第二列等于'Are'的行
-
-```shell
-$ awk '$1>2 && $2=="Are" {print $1,$2,$3}' log.txt    #命令
-#输出
-3 Are you
-```
-
-## 内建变量
-
-| 变量        | 描述                                                       |
-| ----------- | ---------------------------------------------------------- |
-| $n          | 当前记录的第n个字段，字段间由FS分隔                        |
-| $0          | 完整的输入记录                                             |
-| ARGC        | 命令行参数的数目                                           |
-| ARGIND      | 命令行中当前文件的位置(从0开始算)                          |
-| ARGV        | 包含命令行参数的数组                                       |
-| CONVFMT     | 数字转换格式(默认值为%.6g)ENVIRON环境变量关联数组          |
-| ERRNO       | 最后一个系统错误的描述                                     |
-| FIELDWIDTHS | 字段宽度列表(用空格键分隔)                                 |
-| FILENAME    | 当前文件名                                                 |
-| FNR         | 各文件分别计数的行号                                       |
-| FS          | 字段分隔符(默认是任何空格)                                 |
-| IGNORECASE  | 如果为真，则进行忽略大小写的匹配                           |
-| NF          | 一条记录的字段的数目                                       |
-| NR          | 已经读出的记录数，就是行号，从1开始                        |
-| OFMT        | 数字的输出格式(默认值是%.6g)                               |
-| OFS         | 输出记录分隔符（输出换行符），输出时用指定的符号代替换行符 |
-| ORS         | 输出记录分隔符(默认值是一个换行符)                         |
-| RLENGTH     | 由match函数所匹配的字符串的长度                            |
-| RS          | 记录分隔符(默认是一个换行符)                               |
-| RSTART      | 由match函数所匹配的字符串的第一个位置                      |
-| SUBSEP      | 数组下标分隔符(默认值是/034)                               |
-
-```shell
-$ awk 'BEGIN{printf "%4s %4s %4s %4s %4s %4s %4s %4s %4s\n","FILENAME","ARGC","FNR","FS","NF","NR","OFS","ORS","RS";printf "---------------------------------------------\n"} {printf "%4s %4s %4s %4s %4s %4s %4s %4s %4s\n",FILENAME,ARGC,FNR,FS,NF,NR,OFS,ORS,RS}'  log.txt
-FILENAME ARGC  FNR   FS   NF   NR  OFS  ORS   RS
----------------------------------------------
-log.txt    2    1         5    1
-log.txt    2    2         5    2
-log.txt    2    3         3    3
-log.txt    2    4         4    4
-$ awk -F\' 'BEGIN{printf "%4s %4s %4s %4s %4s %4s %4s %4s %4s\n","FILENAME","ARGC","FNR","FS","NF","NR","OFS","ORS","RS";printf "---------------------------------------------\n"} {printf "%4s %4s %4s %4s %4s %4s %4s %4s %4s\n",FILENAME,ARGC,FNR,FS,NF,NR,OFS,ORS,RS}'  log.txt
-FILENAME ARGC  FNR   FS   NF   NR  OFS  ORS   RS
----------------------------------------------
-log.txt    2    1    '    1    1
-log.txt    2    2    '    1    2
-log.txt    2    3    '    2    3
-log.txt    2    4    '    1    4
-# 输出顺序号 NR, 匹配文本行号
-$ awk '{print NR,FNR,$1,$2,$3}' log.txt
----------------------------------------------
-1 1 2 this is
-2 2 3 Are you
-3 3 This's a test
-4 4 10 There are
-# 指定输出分割符
-$  awk '{print $1,$2,$5}' OFS=" $ "  log.txt
----------------------------------------------
-2 $ this $ test
-3 $ Are $ awk
-This's $ a $
-10 $ There $
-```
-
-## 使用正则，字符串匹配
-
-```shell
-# 输出第二列包含 "th"，并打印第二列与第四列
-$ awk '$2 ~ /th/ {print $2,$4}' log.txt
----------------------------------------------
-this a
-```
-
-**~ 表示模式开始。// 中是模式。**
-
-```shell
-# 输出包含 "re" 的行
-$ awk '/re/ ' log.txt
----------------------------------------------
-3 Are you like awk
-10 There are orange,apple,mongo
-```
-
-------
-
-## 忽略大小写
-
-```shell
-$ awk 'BEGIN{IGNORECASE=1} /this/' log.txt
----------------------------------------------
-2 this is a test
-This's a test
-```
-
-------
-
-## 模式取反
-
-```shell
-$ awk '$2 !~ /th/ {print $2,$4}' log.txt
----------------------------------------------
-Are like
-a
-There orange,apple,mongo
-$ awk '!/th/ {print $2,$4}' log.txt
----------------------------------------------
-Are like
-a
-There orange,apple,mongo
-```
-
-------
-
-## awk脚本
-
-关于 awk 脚本，我们需要注意两个关键词 BEGIN 和 END。
-
-- BEGIN{ 这里面放的是执行前的语句 }
-- END {这里面放的是处理完所有的行后要执行的语句 }
-- {这里面放的是处理每一行时要执行的语句}
-
-假设有这么一个文件（学生成绩表）：
-
-```shell
-$ cat score.txt
-Marry   2143 78 84 77
-Jack    2321 66 78 45
-Tom     2122 48 77 71
-Mike    2537 87 97 95
-Bob     2415 40 57 62
-```
-
-我们的 awk 脚本如下：
-
-```shell
-$ cat cal.awk
-#!/bin/awk -f
-#运行前
-BEGIN {
-    math = 0
-    english = 0
-    computer = 0
- 
-    printf "NAME    NO.   MATH  ENGLISH  COMPUTER   TOTAL\n"
-    printf "---------------------------------------------\n"
-}
-#运行中
-{
-    math+=$3
-    english+=$4
-    computer+=$5
-    printf "%-6s %-6s %4d %8d %8d %8d\n", $1, $2, $3,$4,$5, $3+$4+$5
-}
-#运行后
-END {
-    printf "---------------------------------------------\n"
-    printf "  TOTAL:%10d %8d %8d \n", math, english, computer
-    printf "AVERAGE:%10.2f %8.2f %8.2f\n", math/NR, english/NR, computer/NR
-}
-```
-
-```shell
-$ awk -f cal.awk score.txt
-NAME    NO.   MATH  ENGLISH  COMPUTER   TOTAL
----------------------------------------------
-Marry  2143     78       84       77      239
-Jack   2321     66       78       45      189
-Tom    2122     48       77       71      196
-Mike   2537     87       97       95      279
-Bob    2415     40       57       62      159
----------------------------------------------
-  TOTAL:       319      393      350
-AVERAGE:     63.80    78.60    70.00
-```
-
-# Linux rpm命令
-
-Linux rpm 命令用于管理套件。 
-
-安装软件
-
-```shell
-# rpm -hvi dejagnu-1.4.2-10.noarch.rpm 
-警告：dejagnu-1.4.2-10.noarch.rpm: V3 DSA 签名：NOKEY, key ID db42a60e
-准备...           
-########################################### [100%]
-```
-
-显示软件安装信息
-
-```shell
-# rpm -qi dejagnu-1.4.2-10.noarch.rpm
-
-```
-
 # Shell脚本里添加有效的环境变量        
 
 ```shell
@@ -1396,3 +1102,4 @@ echo "export JAVA_HOME" >>/etc/profile
 source /etc/profile
 
 ```
+
