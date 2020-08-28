@@ -546,6 +546,7 @@ pybin-0.0.1.tar.gz
 
 根据具体情况进行修改，示例：请参照< RPM构建 - SPEC文件参数解析> 
 
+```shell
 %define debug_package %{nil}
 #%define _python_bytecompile_errors_terminate_build0
 %define workdir /usr/bin
@@ -589,7 +590,7 @@ rm -rf $RPM_BUILD_ROOT/
  
  
 %changelog
- 
+```
 
 4     编译RPM
 通过指定spec文件编译RPM包，命令如下：选项含义参加《RPM构建 - 介绍》 
