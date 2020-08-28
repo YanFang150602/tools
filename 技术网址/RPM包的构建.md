@@ -511,3 +511,110 @@ rm-rf $RPM_BUILD_ROOT
 
 9     更新日志%changelog
 每次软件的更新内容可以记录在此到这里，保存到发布的软件包中，以便查询之用。
+
+# 简单实例
+实例：将小程序pybin.py搬运到/usr/bin目录下，程序代码如下：pybin.py
+print "Hello world, I am pybin."
+
+ 
+1     构建目录结构
+依照 rpmbuild 规范设定一个目录结构，
+```shell
+[root@node0 rpmbuild]# ls
+BUILD BUILDROOT  RPMS  SOURCES SPECS  SRPMS
+```
+
+2     准备要打包文件
+将源代码（理想情况下应为一个 tar.gz压缩文件）复制到 SOURCES 目录中。如果有必要，重命名 tar压缩文件，以包含应用程序的版本号，便于与其他文件区分开。约定的命名格式为包-版本.tar.gz
+
+```shell
+[root@node0 rpmbuild]# ls SOURCES/pybin-0.0.1
+pybin.py
+[root@node0 rpmbuild]# cd SOURCES
+[root@node0 SOURCES]# tar -zcf pybin-0.0.1.tar.gzpybin-0.0.1
+[root@node0 SOURCES]# rm -rf pybin-0.0.1;ls
+pybin-0.0.1.tar.gz
+[root@node0 rpmbuild]#
+```
+
+3     Spec文件
+在SPEC目录通过以下命令初始化spec文件：
+
+```shell
+[root@node0 SPECS]# rpmdev-newspec pybin.spec
+```
+
+根据具体情况进行修改，示例：请参照< RPM构建 - SPEC文件参数解析> 
+
+%define debug_package %{nil}
+#%define _python_bytecompile_errors_terminate_build0
+%define workdir /usr/bin
+ 
+Name:       pybin
+Version: 0.0.1
+Release:    1%{?dist}
+Summary:    Thisis a python script
+ 
+Group:      Development/System
+License:    GPL
+URL:        www.123456789.com
+Source0:    %{name}-%{version}.tar.gz
+ 
+#BuildRequires:
+#Requires: 
+ 
+%description
+This is a python script
+ 
+%prep
+%setup -q
+ 
+ 
+%build
+ 
+ 
+%install
+mkdir -p $RPM_BUILD_ROOT/%{workdir}
+chmod 755 pybin.py
+cp -rf pybin.py $RPM_BUILD_ROOT/%{workdir}
+ 
+ 
+%clean
+rm -rf $RPM_BUILD_ROOT/
+ 
+%files
+%doc
+%{workdir}/pybin.py
+%defattr(0755,root,root)
+ 
+ 
+%changelog
+ 
+
+4     编译RPM
+通过指定spec文件编译RPM包，命令如下：选项含义参加《RPM构建 - 介绍》 
+
+```shell
+[root@node0 SPECS]# rpmbuild -bb pybin.spec
+```
+
+5     测试RPM
+测试结果
+```shell
+[root@node0 release]# rpm -q iftop
+package iftop is not installed
+[root@node0 release]# rpm -ivhx86_64/iftop-0.17-1.el7.centos.x86_64.rpm
+Preparing...                         ################################# [100%]
+Updating / installing...
+  1:iftop-0.17-1.el7.centos         ################################# [100%]
+[root@node0 release]# whereis iftop
+iftop: /usr/sbin/iftop /usr/man/man8/iftop.8.gz
+[root@node0 release]# ls -al /usr/sbin/iftop
+-rwxr-xr-x 1 root root 61370 Nov 10 16:26/usr/sbin/iftop
+[root@node0 release]# rpm -q iftop
+iftop-0.17-1.el7.centos.x86_64
+[root@node0 release]# rpm -e iftop
+[root@node0 release]# rpm -q iftop
+package iftop is not installed
+[root@node0 release]#
+```
