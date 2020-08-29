@@ -1,3 +1,118 @@
+# 本地安装git
+
+**查看是否存在ssh密钥**
+
+1、打开git bash
+
+2、使用ls -al ~/.ssh查看已存在的ssh密钥：
+
+```bash
+彦博@LAPTOP-7G0LB5QQ MINGW64 ~
+$ ls -al ~/.ssh
+total 32
+drwxr-xr-x 1 彦博 197121    0  5月 11 07:35 ./
+drwxr-xr-x 1 彦博 197121    0  8月  2 08:55 ../
+-rw-r--r-- 1 彦博 197121 3247  5月 11 07:35 id_rsa
+-rw-r--r-- 1 彦博 197121  743  5月 11 07:35 id_rsa.pub
+-rw-r--r-- 1 彦博 197121 1197  5月 11 08:58 known_hosts
+```
+
+默认情况下，公钥的文件名是下列之一：
+
+·    *id_dsa.pub*
+
+·    *id_ecdsa.pub*
+
+·    *id_ed25519.pub*
+
+·    *id_rsa.pub*
+
+3、如果您没有现有的公钥和私钥对，或者不希望使用任何可用的来连接到GitHub，那么生成一个新的ssh密钥。
+
+**提示：如果您收到一个~/.ssh不存在的错误，不要担心！我们将在生成新的ssh密钥时创建它。**
+
+**生成一个新的ssh密钥**
+
+打开git bash
+
+将下面的文本复制粘贴到git bash，替换您的Github电子邮件地址：
+
+ssh-keygen -t rsa -b 4096 -C [your_email@example.com](mailto:your_email@example.com)
+
+如果已存在ssh密钥，可以选择将其覆盖。
+
+拷贝id_rsa.pub文件里的内容：
+
+clip < ~/.ssh/id_rsa.pub
+
+向ssh代理添加ssh密钥，单击New ssh key或Add ssh key。
+
+# 克隆仓
+
+git clone -b remote_br git@rnd-isourceb.huawei.com:yWX373151/AC_BP_trunk_ac_bp_web.git
+
+# 添加远程仓
+
+git remote add trunk git@rnd-isourceb.huawei.com:AC_BP_trunk/ac_bp_web.git
+git remote -v 查看远程仓信息
+git remote show 查看本地定义的远程仓名
+git remote show source 查看source远程仓与本地的信息
+
+# 本地新建分支，并上传到远程仓上
+
+git checkout -b new_local_br
+此时git push失败，需要执行下面，在远程仓上也新建了分支，并与本地分支保持跟踪
+git push --set-upstream origin new_remote_br
+后面就可以直接git push
+
+# 下载远程仓上的分支
+
+git fetch 远程仓 远程分支
+git checkout -b 本地分支 远程仓/远程分支
+
+# 合并
+
+git merge 本地另一分支
+git checkout 本地另一分支 路径|文件名
+
+**示例**
+
+如果只是简单的将feature分支的文件f.txt copy到master分支上；
+
+```bash
+git checkout master
+git checkout feature f.tx
+```
+
+# git stash
+
+```bash
+git stash list
+git stash save "xxx"
+git stash show
+git stash apply stash@{0}
+git stash drop stash@{0}
+```
+
+# 文件回退
+
+```bash
+#文件从暂存区回退到工作区
+git reset HEAD  
+
+#回退文件，将文件从暂存区回退到工作区
+git reset HEAD filename   
+
+#回退版本，一个^表示一个版本，可以多个，另外也可以使用 git reset HEAD～n这种形式
+git reset HEAD^   
+
+#意为将版本库回退1个版本，但是不仅仅是将本地版本库的头指针全部重置到指定版本，也会重置暂存区，并且会将工作区代码也回退到这个版本
+git reset --hard HEAD～1
+
+#意为将版本库软回退1个版本，所谓软回退表示将本地版本库的头指针全部重置到指定版本，且将这次提交之后的所有变更都移动到暂存区
+git reset --soft HEAD～1 
+```
+
 git core.autocrlf配置说明
 格式化
 
@@ -21,4 +136,13 @@ $ git config --global core.autocrlf input
 
 $ git config --global core.autocrlf false
 
-转自：http://www.qinbin.me/git-core-autocrlf配置说明/
+设置git全局忽略文件，此方法设置的忽略列表对当前用户本地所有仓库有效，但不会上传到远程仓库。
+1、创建.gitignore
+新建一个文件 ~/.gitignore，并添加所有仓库都需要忽略的文件列表
+2、设置全局有效
+git config --global core.excludesfile ~/.gitignore
+如果仓库中还有.gitignore文件，则两者均会忽略。
+
+
+
+
