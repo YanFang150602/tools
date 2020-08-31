@@ -1,3 +1,107 @@
+# declare 
+
+declare命令用于声明 shell 变量。 
+
+declare为shell指令，在第一种语法中可用来声明变量并设置变量的属性([rix]即为变量的属性），在第二种语法中
+
+可用来显示shell函数。若不加上任何参数，则会显示全部的shell变量与函数(与执行set指令的效果相同)。 
+
+**语法**
+
+```shell
+declare [+/-][rxi][变量名称=设置值] 或 declare -f
+```
+
+**参数说明**：
+
+- +/- 　"-"可用来指定变量的属性，"+"则是取消变量所设的属性。
+- -f 　仅显示函数。
+- r 　将变量设置为只读。
+- x 　指定的变量会成为环境变量，可供shell以外的程序来使用，和export的作用类似 。
+- i 　声明一个整型 。
+- a    声明一个数组 。
+- p    查看变量的被声明的类型 。
+
+**示例**
+
+声明整数型变量
+
+```shell
+# 声明整数型变量
+$ declare -i ab
+# 改变变量内容
+$ ab=56 
+# 显示变量内容
+$ echo $ab 
+56
+```
+
+改变变量属性
+
+```shell
+# 声明整数型变量
+$ declare -i ef
+# 变量赋值（整数值）
+$ ef=1
+# 显示变量内容
+$ echo $ef
+1
+# 变量赋值（文本值）
+$ ef="wer" 
+$ echo $ef 
+0
+# 取消变量属性
+$ declare +i ef 
+$ ef="wer"
+$ echo $ef
+wer
+```
+
+设置变量只读
+
+```shell
+# 设置变量为只读
+$ declare -r ab
+# 改变变量内容
+$ ab=88 
+-bash: ab: 只读变量
+# 显示变量内容
+$ echo $ab 
+56
+```
+
+声明数组变量
+
+```shell
+# 声明数组变量
+$ declare -a cd='([0]="a" [1]="b" [2]="c")' 
+$ echo ${cd[1]}
+b //显示变量内容
+# 显示整个数组变量内容
+$ echo ${cd[@]} 
+a b c
+```
+
+显示函数
+
+```shell
+$ declare -f
+command_not_found_handle () 
+{ 
+  if [ -x /usr/lib/command-not-found ]; then
+    /usr/bin/python /usr/lib/command-not-found -- $1;
+    return $?;
+  else
+    if [ -x /usr/share/command-not-found ]; then
+      /usr/bin/python /usr/share/command-not-found -- $1;
+      return $?;
+    else
+      return 127;
+    fi;
+  fi
+}
+```
+
 # sed 
 
 sed 命令是利用脚本来处理文本文件。 
@@ -488,6 +592,115 @@ Linux rpm 命令用于管理套件。
 cat /etc/passwd 
 
 cat /etc/passwd | grep user_name
+```
+
+# chmod
+
+Linux/Unix 的文件调用权限分为三级 : 文件拥有者、群组、其他。利用 chmod 可以藉以控制文件如何被他人所调用。
+
+**使用权限** : 所有使用者
+
+**语法**
+
+```shell
+chmod [-cfvR] [--help] [--version] mode file...
+```
+
+**参数说明**
+
+mode : 权限设定字串，格式如下 :
+
+```
+[ugoa...][[+-=][rwxX]...][,...]
+```
+
+其中：
+
+- u 表示该文件的拥有者，g 表示与该文件的拥有者属于同一个群体(group)者，o 表示其他以外的人，a 表示这三者皆是。
+- \+ 表示增加权限、- 表示取消权限、= 表示唯一设定权限。
+- r 表示可读取，w 表示可写入，x 表示可执行，X 表示只有当该文件是个子目录或者该文件已经被设定过为可执行。
+
+其他参数说明：
+
+- -c : 若该文件权限确实已经更改，才显示其更改动作
+- -f : 若该文件权限无法被更改也不要显示错误讯息
+- -v : 显示权限变更的详细资料
+- -R : 对目前目录下的所有文件与子目录进行相同的权限变更(即以递回的方式逐个变更)
+- --help : 显示辅助说明
+- --version : 显示版本
+
+**示例**
+
+将文件 file1.txt 设为所有人皆可读取 :
+
+```shell
+chmod ugo+r file1.txt
+```
+
+将文件 file1.txt 设为所有人皆可读取 :
+
+```shell
+chmod a+r file1.txt
+```
+
+将文件 file1.txt 与 file2.txt 设为该文件拥有者，与其所属同一个群体者可写入，但其他以外的人则不可写入 :
+
+```shell
+chmod ug+w,o-w file1.txt file2.txt
+```
+
+将 ex1.py 设定为只有该文件拥有者可以执行 :
+
+```shell
+chmod u+x ex1.py
+```
+
+将目前目录下的所有文件与子目录皆设为任何人可读取 :
+
+```shell
+chmod -R a+r *
+```
+
+此外chmod也可以用数字来表示权限如 :
+
+```shell
+chmod 777 file
+```
+
+语法为：
+
+```shell
+chmod abc file
+```
+
+其中a,b,c各为一个数字，分别表示User、Group、及Other的权限。
+
+r=4，w=2，x=1
+
+- 若要rwx属性则4+2+1=7；
+- 若要rw-属性则4+2=6；
+- 若要r-x属性则4+1=5。
+
+```shell
+chmod a=rwx file
+```
+
+和
+
+```shell
+chmod 777 file
+```
+
+效果相同
+
+```shell
+chmod ug=rwx,o=x file
+```
+
+和
+
+```shell
+chmod 771 file
 ```
 
 # chown 
