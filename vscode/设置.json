@@ -1,0 +1,125 @@
+{
+    "http.proxyStrictSSL": true,
+    "files.autoGuessEncoding": true,
+    "C_Cpp.intelliSenseEngineFallback": "Disabled",
+    "C_Cpp.default.browse.databaseFilename": "${workspaceFolder}/.vscode/vc.db",
+    "C_Cpp.default.intelliSenseMode":"msvc-x64",
+    "C_Cpp.dimInactiveRegions":true,
+    "workbench.activityBar.visible": true,
+    "workbench.sideBar.location": "left",
+    "window.menuBarVisibility": "default",
+    "editor.renderWhitespace": "all",
+    "files.autoSave": "afterDelay",
+    "workbench.statusBar.visible": true,
+    "explorer.sortOrder": "type",
+    "extensions.autoCheckUpdates": true,
+    "extensions.autoUpdate": true,
+    "update.mode": "none",
+    "update.enableWindowsBackgroundUpdates": false,
+    "workbench.editor.enablePreview": false,
+    "window.title": "${dirty}${activeEditorLong}${separator}${rootName}${separator}${appName}",
+    "window.titleBarStyle": "custom",
+    "gitlens.advanced.messages": {
+        "suppressShowKeyBindingsNotice": true,
+        "suppressGitDisabledWarning": true
+    },
+    "editor.minimap.enabled": false,
+    "editor.rulers": [
+        120
+    ],
+    "terminal.integrated.rendererType": "dom",
+    "telemetry.enableTelemetry": false,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false,
+    "workbench.startupEditor": "newUntitledFile",
+    "C_Cpp.intelliSenseEngine": "Default",
+    "C_Cpp.workspaceParsingPriority": "low",
+    "editor.suggest.localityBonus": true,
+    "files.exclude": {
+        "**/.github": true
+    },
+    "window.zoomLevel": 0,
+    "http.proxySupport": "off",
+    "search.useIgnoreFiles": false,
+    "WeCode.InstallPath": "D:\\software\\WeCode\\",
+    "WeCode.GitPath": "C:\\software\\Git\\cmd\\git.exe",
+    "workbench.iSource.accessToken": "ad1c695301ab72b127e8f02a8991bde19bb690165be1c73abc51c0804485123f",
+    "workbench.colorTheme": "Custom C7EDCC Upgrade",
+    "editor.detectIndentation": false,
+    "javascript.implicitProjectConfig.experimentalDecorators": true,
+    "WeCode.CodeReview_EnableIsourceMessageBox": false,
+    "[html]": {
+        "editor.defaultFormatter": "HookyQR.beautify"
+    },
+    "workbench.iconTheme": "material-icon-theme",
+    "editor.tokenColorCustomizations": {
+        "comments": "#46a870",
+        "keywords": "#1b74da",
+        "variables": "#22222088",
+        "strings": "#2fa2cff3",
+        "functions": "#055ff0c9",
+        "numbers": "#5a15da",
+        "textMateRules": [{
+            "name": "Comment",
+            "scope": [
+                "comment",
+                "comment.block",
+                "comment.block.documentation",
+                "comment.line",
+                "comment.line.double-slash",
+                "punctuation.definition.comment",
+            ],
+            "settings": {
+                "fontStyle": "",
+                //斜体 "fontStyle": "italic",
+                //斜体下划线 "fontStyle": "italic underline",
+                //斜体粗体下划线 "fontStyle": "italic bold underline",
+            }
+        }, {
+            "name": "String",
+            "scope":[
+                "string"
+            ],
+            "settings": {
+                "foreground": "#32a504",
+                "fontStyle": ""
+            }
+        }, {
+            "name": "HTML:Tags",
+            "scope":[
+                "meta.tag",
+                "punctuation.definition.tag.html",
+                "punctuation.definition.tag.begin.html",
+                "punctuation.definition.tag.end.html"
+            ],
+            "settings": {
+                "foreground": "#4b4444",
+                "fontStyle": ""
+            }
+        }, {
+            "name": "HTML: Tag Names",
+            "scope": "entity.name.tag",
+            "settings": {
+                "foreground": "#4B83CD"
+            }
+        }, {
+            "name": "HTML: Attribute Names",
+            "scope": [
+                "meta.tag entity.other.attribute-name",
+                "entity.other.attribute-name.html"
+            ],
+            "settings": {
+                "fontStyle": "italic",
+                "foreground": "#91B3E0"
+            }
+        }]
+    },
+    "workbench.colorCustomizations": {
+        // 默认字体颜色
+        "editor.foreground": "#201515",
+        "editor.lineHighlightBackground": "#ffd00033",
+        "editor.selectionBackground": "#aa0000"
+    },
+    "editor.fontSize": 15
+}
