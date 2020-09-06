@@ -1,3 +1,62 @@
+# curl
+
+curl 是常用的命令行工具，用来请求 Web 服务器。它的名字就是客户端（client）的 URL 工具的意思。
+
+**语法**
+
+```bash
+curl [option] [url]
+```
+
+**参数说明**：
+
+- -b	用来向服务器发送 Cookie。
+- -c　将服务器设置的 Cookie 写入一个文件
+- -d　用于发送 POST 请求的数据体，可以读取本地文本文件的数据，向服务器发送
+- --data-urlencode    等同于-d，发送 POST 请求的数据体，区别在于会自动将发送的数据进行 URL 编码
+- -G    用来构造 URL 的查询字符串
+- -H    添加 HTTP 请求的标头
+- -o     将服务器的回应保存成文件，等同于`wget`命令
+- -O    将服务器回应保存成文件，并将 URL 的最后部分当作文件名
+- -u    用来设置服务器认证的用户名和密码
+- -v    输出通信的整个过程，用于调试
+- -X    指定 HTTP 请求的方法
+
+**示例**
+
+```bash
+# 向服务器发送 Cookie
+$ curl -b 'foo1=bar;foo2=bar2' https://google.com
+# 读取本地文件cookies.txt，里面是服务器设置的 Cookie
+$ curl -b cookies.txt https://www.google.com
+# 将服务器的 HTTP 回应所设置 Cookie 写入文本文件cookies.txt
+$ curl -c cookies.txt https://www.google.com
+# 发送 POST 请求的数据体
+$ curl -d'login=emma＆password=123'-X POST https://google.com/login
+# 或者
+$ curl -d 'login=emma' -d 'password=123' -X POST  https://google.com/login
+# 读取data.txt文件的内容，作为数据体向服务器发送
+$ curl -d '@data.txt' https://google.com/login
+# 会发出一个 GET 请求，实际请求的 URL 为https://google.com/search?q=kitties&count=20。如果省略--G，会发出一个 POST 请求。
+$ curl -G -d 'q=kitties' -d 'count=20' https://google.com/search
+# 数据需要 URL 编码，可以结合--data--urlencode参数
+$ curl -G --data-urlencode 'comment=hello world' https://www.example.com
+# 将www.example.com保存成example.html
+$ curl -o example.html https://www.example.com
+# 将服务器回应保存成文件，文件名为bar.html
+$ curl -O https://www.example.com/foo/bar.html
+# 命令设置用户名为bob，密码为12345
+$ curl -u 'bob:12345' https://google.com/login
+# curl 能够识别 URL 里面的用户名和密码
+$ curl https://bob:12345@google.com/login
+# 命令只设置了用户名，执行后，curl 会提示用户输入密码
+$ curl -u 'bob' https://google.com/login
+$ curl -v https://www.example.com
+# 对https://www.example.com发出 POST 请求。
+$ curl -X POST https://www.example.com
+```
+
+
 # export 
 
 export 命令用于设置或显示环境变量。 

@@ -1,3 +1,313 @@
+# netstat
+
+netstat命令用于显示网络状态。
+
+利用netstat指令可让你得知整个Linux系统的网络情况。
+
+**语法**
+
+```shell
+netstat [-acCeFghilMnNoprstuvVwx][-A<网络类型>][--ip]
+```
+
+**参数说明**：
+
+- -a或--all 显示所有连线中的Socket。
+- -A<网络类型>或--<网络类型> 列出该网络类型连线中的相关地址。
+- -c或--continuous 持续列出网络状态。
+- -C或--cache 显示路由器配置的快取信息。
+- -e或--extend 显示网络其他相关信息。
+- -F或--fib 显示FIB。
+- -g或--groups 显示多重广播功能群组组员名单。
+- -h或--help 在线帮助。
+- -i或--interfaces 显示网络界面信息表单。
+- -l或--listening 显示监控中的服务器的Socket。
+- -M或--masquerade 显示伪装的网络连线。
+- -n或--numeric 直接使用IP地址，而不通过域名服务器。
+- -N或--netlink或--symbolic 显示网络硬件外围设备的符号连接名称。
+- -o或--timers 显示计时器。
+- -p或--programs 显示正在使用Socket的程序识别码和程序名称。
+- -r或--route 显示Routing Table。
+- -s或--statistice 显示网络工作信息统计表。
+- -t或--tcp 显示TCP传输协议的连线状况。
+- -u或--udp 显示UDP传输协议的连线状况。
+- -v或--verbose 显示指令执行过程。
+- -V或--version 显示版本信息。
+- -w或--raw 显示RAW传输协议的连线状况。
+- -x或--unix 此参数的效果和指定"-A unix"参数相同。
+- --ip或--inet 此参数的效果和指定"-A inet"参数相同。
+
+**示例**
+
+```shell
+# 显示详细的网络状况
+$ netstat -a
+
+# 显示当前户籍UDP连接状况
+$ netstat -nu
+
+# 显示UDP端口号的使用情况
+$ netstat -apu
+
+# 显示网卡列表
+$ netstat -i
+
+# 显示组播组的关系
+$ netstat -g
+
+# 显示网络统计信息
+$ netstat -s
+  
+# 显示监听的套接口
+$ netstat -l
+```
+
+# wget
+
+wget是一个下载文件的工具，它用在命令行下。对于Linux用户是必不可少的工具，我们经常要下载一些软件或从远程服务器恢复备份到本地服务器。
+
+ wget支持HTTP，HTTPS和FTP协议，可以使用HTTP代理。所谓的自动下载是指，wget可以在用户退出系统的之后在后台执行。这意味这你可以登录系统，启动
+
+一个wget下载任务，然后退出系统，wget将在后台执行直到任务完成
+
+wget 可以跟踪HTML页面上的链接依次下载来创建远程服务器的本地版本，完全重建原始站点的目录结构。这又常被称作”递归下载”。
+
+wget 非常稳定，它在带宽很窄的情况下和不稳定网络中有很强的适应性.如果是由于网络的原因下载失败，wget会不断的尝试，直到整个文件下载完毕。如果是服
+
+务器打断下载过程，它会再次联到服务器上从停止的地方继续下载。这对从那些限定了链接时间的服务器上下载大文件非常有用。
+
+**语法**
+
+```shell
+wget [选项]... [URL]...
+```
+
+**示例**
+
+```shell
+# 使用wget -O下载并以不同的文件名保存(-O：下载文件到对应目录，并且修改文件名称)
+wget -O wordpress.zip http://www.minjieren.com/download.aspx?id=1080
+# 使用wget -b后台下载
+wget -b http://www.minjieren.com/wordpress-3.1-zh_CN.zip
+# 备注： 你可以使用以下命令来察看下载进度：tail -f wget-log
+
+# 利用-spider: 模拟下载，不会下载，只是会检查是否网站是否好着
+wget --spider  www.baidu.com    #不下载任何文件
+
+# 模拟下载打印服务器响应
+wget -S  www.baidu.com     # 打印服务器响应
+# 设定指定次数
+wget -r --tries=2  www.baidu.com       #指定尝试2次，2次后不再尝试
+wget -r --tries=2 -q www.baidu.com     #指定尝试，且不打印中间结果
+```
+
+# ps
+
+ps命令用于显示当前进程 (process) 的状态。
+
+**语法**
+
+```bash
+ps [options] [--help]
+```
+
+**参数**：
+
+ps 的参数非常多, 在此仅列出几个常用的参数并大略介绍含义
+
+- -A 列出所有的行程
+- -w 显示加宽可以显示较多的资讯
+- -au 显示较详细的资讯
+- -aux 显示所有包含其他使用者的行程
+- e  显示环境变量
+- f  显示程序间的关系
+
+**示例**
+
+显示进程信息
+
+```shell
+# ps -A 
+PID TTY     TIME CMD
+  1 ?    00:00:02 init
+  2 ?    00:00:00 kthreadd
+  3 ?    00:00:00 migration/0
+  4 ?    00:00:00 ksoftirqd/0
+  5 ?    00:00:00 watchdog/0
+  6 ?    00:00:00 events/0
+  7 ?    00:00:00 cpuset
+  8 ?    00:00:00 khelper
+  9 ?    00:00:00 netns
+……省略部分结果
+31302 ?    00:00:00 sshd
+31374 pts/2  00:00:00 bash
+31396 pts/2  00:00:00 ps
+```
+
+显示指定用户(root)信息
+
+```shell
+# ps -u root
+ PID TTY     TIME CMD
+  1 ?    00:00:02 init
+  2 ?    00:00:00 kthreadd
+  10 ?    00:00:00 async/mgr
+  11 ?    00:00:00 pm
+  12 ?    00:00:00 sync_supers
+  13 ?    00:00:00 bdi-default
+  14 ?    00:00:00 kintegrityd/0
+  15 ?    00:00:02 kblockd/0
+  16 ?    00:00:00 kacpid
+……省略部分结果
+30487 ?    00:00:06 gnome-terminal
+30488 ?    00:00:00 gnome-pty-helpe
+30489 pts/0  00:00:00 bash
+31302 ?    00:00:00 sshd
+31374 pts/2  00:00:00 bash
+31397 pts/2  00:00:00 ps
+```
+
+显示所有进程信息，连同命令行
+
+```shell
+# ps -ef 
+UID    PID PPID C STIME TTY     TIME CMD
+root     1   0 0 10:22 ?    00:00:02 /sbin/init
+root     2   0 0 10:22 ?    00:00:00 [kthreadd]
+……省略部分结果
+root   31302 2095 0 17:42 ?    00:00:00 sshd: root@pts/2 
+root   31374 31302 0 17:42 pts/2  00:00:00 -bash
+root   31400   1 0 17:46 ?    00:00:00 /usr/bin/python /usr/sbin/aptd
+root   31407 31374 0 17:48 pts/2  00:00:00 ps -ef
+```
+
+ps 与grep 常用组合用法，查找特定进程
+
+```shell
+# ps -ef | grep ssh
+gec        9452  79650  0 06:05 pts/4    00:00:00 grep --color=auto ssh
+root      16628      1  0 03:45 ?        00:00:00 /usr/sbin/sshd -D
+```
+
+# kill 终止进程 
+
+```shell
+有十几种控制进程的方法，下面是一些常用的方法:
+kill -STOP [pid]
+发送SIGSTOP (17,19,23)停止一个进程，而并不消灭这个进程。
+kill -CONT [pid]
+发送SIGCONT (19,18,25)重新开始一个停止的进程。
+kill -KILL [pid]
+发送SIGKILL (9)强迫进程立即停止，并且不实施清理操作。
+kill -9 -1
+终止你拥有的全部进程。
+SIGKILL 和 SIGSTOP 信号不能被捕捉、封锁或者忽略，但是，其它的信号可以。所以这是你的终极武器。
+```
+
+# declare 
+
+declare命令用于声明 shell 变量。 
+
+declare为shell指令，在第一种语法中可用来声明变量并设置变量的属性([rix]即为变量的属性），在第二种语法中
+
+可用来显示shell函数。若不加上任何参数，则会显示全部的shell变量与函数(与执行set指令的效果相同)。 
+
+**语法**
+
+```shell
+declare [+/-][rxi][变量名称=设置值] 或 declare -f
+```
+
+**参数说明**：
+
+- +/- 　"-"可用来指定变量的属性，"+"则是取消变量所设的属性。
+- -f 　仅显示函数。
+- r 　将变量设置为只读。
+- x 　指定的变量会成为环境变量，可供shell以外的程序来使用，和export的作用类似 。
+- i 　声明一个整型 。
+- a    声明一个数组 。
+- p    查看变量的被声明的类型 。
+
+**示例**
+
+声明整数型变量
+
+```shell
+# 声明整数型变量
+$ declare -i ab
+# 改变变量内容
+$ ab=56 
+# 显示变量内容
+$ echo $ab 
+56
+```
+
+改变变量属性
+
+```shell
+# 声明整数型变量
+$ declare -i ef
+# 变量赋值（整数值）
+$ ef=1
+# 显示变量内容
+$ echo $ef
+1
+# 变量赋值（文本值）
+$ ef="wer" 
+$ echo $ef 
+0
+# 取消变量属性
+$ declare +i ef 
+$ ef="wer"
+$ echo $ef
+wer
+```
+
+设置变量只读
+
+```shell
+# 设置变量为只读
+$ declare -r ab
+# 改变变量内容
+$ ab=88 
+-bash: ab: 只读变量
+# 显示变量内容
+$ echo $ab 
+56
+```
+
+声明数组变量
+
+```shell
+# 声明数组变量
+$ declare -a cd='([0]="a" [1]="b" [2]="c")' 
+$ echo ${cd[1]}
+b //显示变量内容
+# 显示整个数组变量内容
+$ echo ${cd[@]} 
+a b c
+```
+
+显示函数
+
+```shell
+$ declare -f
+command_not_found_handle () 
+{ 
+  if [ -x /usr/lib/command-not-found ]; then
+    /usr/bin/python /usr/lib/command-not-found -- $1;
+    return $?;
+  else
+    if [ -x /usr/share/command-not-found ]; then
+      /usr/bin/python /usr/share/command-not-found -- $1;
+      return $?;
+    else
+      return 127;
+    fi;
+  fi
+}
+```
+
 # sed 
 
 sed 命令是利用脚本来处理文本文件。 
@@ -488,6 +798,115 @@ Linux rpm 命令用于管理套件。
 cat /etc/passwd 
 
 cat /etc/passwd | grep user_name
+```
+
+# chmod
+
+Linux/Unix 的文件调用权限分为三级 : 文件拥有者、群组、其他。利用 chmod 可以藉以控制文件如何被他人所调用。
+
+**使用权限** : 所有使用者
+
+**语法**
+
+```shell
+chmod [-cfvR] [--help] [--version] mode file...
+```
+
+**参数说明**
+
+mode : 权限设定字串，格式如下 :
+
+```
+[ugoa...][[+-=][rwxX]...][,...]
+```
+
+其中：
+
+- u 表示该文件的拥有者，g 表示与该文件的拥有者属于同一个群体(group)者，o 表示其他以外的人，a 表示这三者皆是。
+- \+ 表示增加权限、- 表示取消权限、= 表示唯一设定权限。
+- r 表示可读取，w 表示可写入，x 表示可执行，X 表示只有当该文件是个子目录或者该文件已经被设定过为可执行。
+
+其他参数说明：
+
+- -c : 若该文件权限确实已经更改，才显示其更改动作
+- -f : 若该文件权限无法被更改也不要显示错误讯息
+- -v : 显示权限变更的详细资料
+- -R : 对目前目录下的所有文件与子目录进行相同的权限变更(即以递回的方式逐个变更)
+- --help : 显示辅助说明
+- --version : 显示版本
+
+**示例**
+
+将文件 file1.txt 设为所有人皆可读取 :
+
+```shell
+chmod ugo+r file1.txt
+```
+
+将文件 file1.txt 设为所有人皆可读取 :
+
+```shell
+chmod a+r file1.txt
+```
+
+将文件 file1.txt 与 file2.txt 设为该文件拥有者，与其所属同一个群体者可写入，但其他以外的人则不可写入 :
+
+```shell
+chmod ug+w,o-w file1.txt file2.txt
+```
+
+将 ex1.py 设定为只有该文件拥有者可以执行 :
+
+```shell
+chmod u+x ex1.py
+```
+
+将目前目录下的所有文件与子目录皆设为任何人可读取 :
+
+```shell
+chmod -R a+r *
+```
+
+此外chmod也可以用数字来表示权限如 :
+
+```shell
+chmod 777 file
+```
+
+语法为：
+
+```shell
+chmod abc file
+```
+
+其中a,b,c各为一个数字，分别表示User、Group、及Other的权限。
+
+r=4，w=2，x=1
+
+- 若要rwx属性则4+2+1=7；
+- 若要rw-属性则4+2=6；
+- 若要r-x属性则4+1=5。
+
+```shell
+chmod a=rwx file
+```
+
+和
+
+```shell
+chmod 777 file
+```
+
+效果相同
+
+```shell
+chmod ug=rwx,o=x file
+```
+
+和
+
+```shell
+chmod 771 file
 ```
 
 # chown 
