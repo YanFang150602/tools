@@ -4,7 +4,7 @@ mysql 8.0.20 winx64安装配置方法
 
 # MySQL下载
 
-下载MySQL Community Server：                   
+下载MySQL Community Server：
 
 ![img](file:///C:/Users/83864/AppData/Local/Temp/msohtmlclip1/01/clip_image002.jpg)
 
