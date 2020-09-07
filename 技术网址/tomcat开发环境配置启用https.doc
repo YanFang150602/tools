@@ -1,0 +1,115 @@
+https://blog.csdn.net/lianjunzongsiling/article/details/78635437?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.add_param_isCf&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.add_param_isCf
+
+一、制作证书
+众所周知，https协议需要证书，为了开发去CA买证书是浪费，使用jdk自带的keytool工具做一个开发测试用足够。
+https://docs.oracle.com/javase/8/docs/technotes/tools/windows/keytool.html#CHDBGFHE
+上面是jdk8的keytool的官方文档连接。可用命令不算少，常用的也就几个。
+
+1、新生成一个密钥库
+
+keytool -genkeypair -alias bendiceshi -keyalg RSA -validity 36500 -storepass 123456 -keystore ./test.keystore -v
+
+-alias bendiceshi：证书项的名字，必填项
+-keyalg RSA：证书签名算法，tomcat建议RSA
+-validity 36500：证书有效期，36500天，即100年
+-storepass 123456：密钥库密码，也就是等下要生成的test.keystore的访问密码，妥善保管
+-keystore ./test.keystore：要生成的文件的位置，./test.keystore表示存储在当前目录下
+-v：该选项会显示比较详细的信息
+
+```dos
+D:\workspace\TestCert>keytool -genkeypair -alias bendiceshi -keyalg RSA -validity 36500 -storepass 123456 -keystore ./test.keystore -v
+您的名字与姓氏是什么?
+  [Unknown]:  localhost
+您的组织单位名称是什么?
+  [Unknown]:  Yff
+您的组织名称是什么?
+  [Unknown]:  Yff
+您所在的城市或区域名称是什么?
+  [Unknown]:  NJ
+您所在的省/市/自治区名称是什么?
+  [Unknown]:  NJ
+该单位的双字母国家/地区代码是什么?
+  [Unknown]:  CN
+CN=localhost, OU=Yff, O=Yff, L=NJ, ST=NJ, C=CN是否正确?
+  [否]:  Y
+
+正在为以下对象生成 2,048 位RSA密钥对和自签名证书 (SHA256withRSA) (有效期为 36,500 天):
+         CN=localhost, OU=Yff, O=Yff, L=NJ, ST=NJ, C=CN
+输入 <bendiceshi> 的密钥口令
+        (如果和密钥库口令相同, 按回车):
+[正在存储./test.keystore]
+```
+
+2、向已存在密钥库添加新密钥
+
+keytool -genkeypair -alias bendiceshi_ip -keyalg RSA -validity 36500 -keystore ./test.keystore -v
+
+-alias bendiceshi_ip：新密钥的名字
+-keystore ./test.keystore：刚才生成的密钥库文件的位置
+其余项同1
+
+3、查看密钥库中的项
+
+keytool -list -keystore ./test.keystore
+keytool -list -keystore ./test.keystore -v
+
+添加-v会显示详细信息
+
+```dos
+D:\workspace\TestCert>keytool -list -keystore ./test.keystore
+输入密钥库口令:
+密钥库类型: jks
+密钥库提供方: SUN
+
+您的密钥库包含 1 个条目
+
+bendiceshi, 2020-9-7, PrivateKeyEntry,
+证书指纹 (SHA1): 41:24:25:56:56:2B:DC:63:AB:FC:ED:2B:73:9F:41:51:7D:A2:FC:FE
+```
+
+4、导出证书
+
+keytool -exportcert -alias bendiceshi -file ./bendiceshi.cer -storepass 123456 -keystore ./test.keystore -v
+keytool -exportcert -alias bendiceshi_ip -file ./bendiceshi_ip.cer -storepass 123456 -keystore ./test.keystore -v
+
+
+-alias bendiceshi：要导出的证书的名字，即刚才创建的密钥的名字，即keytool -list时显示的名字
+-file ./bendiceshi.cer：要导出的证书的存储位置，这里我放在当前目录下
+-keystore ./test.keystore：刚才创建的密钥库的位置
+
+```dos
+D:\workspace\TestCert>keytool -exportcert -alias bendiceshi -file ./bendiceshi.cer -storepass 123456 -keystore ./test.keystore -v
+存储在文件 <./bendiceshi.cer> 中的证书
+```
+
+5、copy密钥库文件
+
+将刚才生成的密钥库文件copy到你tomcat的conf目录，跟server.xml同级。注意：这里一定要放在你实际运行的tomcat的conf目录下。
+
+6、修改tomcat配置文件
+
+    <!--老版本tomcat的配置，在tomcat8下测试成功-->
+    <Connector connectionTimeout="20000" port="80" protocol="HTTP/1.1" redirectPort="443"/>
+    <Connector port="443" protocol="org.apache.coyote.http11.Http11NioProtocol"
+               maxThreads="150" SSLEnabled="true" scheme="https" secure="true"
+               clientAuth="false" sslProtocol="TLS" keystoreFile="/conf/test.keystore"
+               keystorePass="123456"/>
+
+注意：以上配置是老版本tomcat的配置，从tomcat8.5开始tomcat更改了配置形式，如上配置估计在tomcat10的时候会完全废弃，在tomcat9.0下测试成功的配置如下：
+    <!--新版本tomcat的配置，在tomcat9下测试成功-->
+    <Connector connectionTimeout="20000" port="80" protocol="HTTP/1.1" redirectPort="443" />
+    <Connector port="443" protocol="org.apache.coyote.http11.Http11Nio2Protocol" maxThreads="150" SSLEnabled="true" scheme="https" secure="true">
+        <SSLHostConfig>
+            <Certificate certificateKeystoreFile="conf/test.keystore" certificateKeystorePassword="123456" />
+        </SSLHostConfig>
+    </Connector>
+
+要修改的配置文件是tomcat的server.xml文件。仔细看上面的配置，第一个Connector是默认就有的，这里只是把8080端口改成了公认的80端口，把8443端口改成了公认的443端口。第二个Connector默认是注释掉的，搜索8443就能找到，直接把上述第二个Connector粘贴到server.xml中第一个Connector的下面，方便管理。keystoreFile=”/conf/test.keystore”就是刚才copy的文件的位置，可以自己改到其他位置。keystorePass=”123456”就是刚才创建密钥库时使用的口令。
+
+7、启动tomcat，做收尾工作
+
+启动tomcat，然后访问你配置的网址，我这里是如上配置，localhost和127.0.0.1。会看到如下现象
+
+<img>
+
+这是因为刚才制作的证书不是买的，所以浏览器无法认证，此时只需要将刚才导出的两个证书，也就是bendiceshi.cer和bendiceshi_ip.cer导入windows系统就行，双击证书
