@@ -1,3 +1,9 @@
+JavaScript 标准内置对象RegExp
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/RegExp
+
+/dev/random和/dev/urandom的一点备忘
+https://blog.csdn.net/ohmygirl/article/details/40385083
+
 Linux命令之md5sum
 Linux head 命令
 Linux exit命令
