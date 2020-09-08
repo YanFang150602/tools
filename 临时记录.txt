@@ -1,3 +1,10 @@
+JAR包结构,META-INF/MANIFEST.MF文件详细说明[全部属性][打包][JDK]
+https://www.cnblogs.com/applerosa/p/9736729.html
+Java META-INF 作用
+https://blog.csdn.net/iteye_10809/article/details/82572041
+Jar包详解和META-INF作用
+https://blog.csdn.net/javazilu/article/details/70240494
+
 JavaScript 标准内置对象RegExp
 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/RegExp
 
