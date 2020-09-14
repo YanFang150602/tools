@@ -1,3 +1,6 @@
+rpm -q 包名
+rpm -e 包名
+
 JAR包结构,META-INF/MANIFEST.MF文件详细说明[全部属性][打包][JDK]
 https://www.cnblogs.com/applerosa/p/9736729.html
 Java META-INF 作用
