@@ -24,9 +24,9 @@ function outer() {
 
 从堆栈的角度看待js函数：
 
-基本变量的值一般都是存在栈内存中，而对象类型的变量的值存储在堆内存中，栈内存存储对应空间地址。基本的数据类型: Number 、Boolean、
+基本变量的值一般都是存在栈内存中，而对象类型的变量的值存储在堆内存中，栈内存存储对应空间地址。基本的数据类型: Number 、Boolean、Undefined、
 
-Undefined、String、Null。
+String、Null。
 
 ```js
 var  a = 1   //a是一个基本类型
