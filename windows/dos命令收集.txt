@@ -1,4 +1,5 @@
 tasklist /fi "imagename eq nginx.exe"
+tasklist|findstr -i "xxfpm.exe"
 
 taskkill /f /t /im nginx.exe
 
