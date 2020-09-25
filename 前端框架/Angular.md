@@ -1,5 +1,3 @@
-
-
 # Angular开始
 
 ## 安装Angular脚手架
@@ -48,8 +46,6 @@ ng generate service services/common
 # --module=app 告诉 CLI 把它注册到 AppModule 的 imports 数组中。
 ng generate module app-routing --flat --module=app
 ```
-
-
 
 ## 启动项目
 
@@ -174,23 +170,7 @@ parentMsg: string = '我来自Parent Component的！';
 
 ## @Output
 
-## @Injectable()  
 
-标记性元数据，表示一个类可以由 `Injector` 进行创建。 @Injectable()  标记的类将会提供一个可注入的服务 
-
-`@Injectable()` 装饰器会接受该服务的元数据对象，就像 `@Component()` 对组件类的作用一样。 
-
-必须先注册一个*服务提供者*，来让服务类在依赖注入系统中可用，Angular 才能把它注入到组件中。所谓服务提供者就是某种可用来创建或交付一个服务的东西；在这里，它通过实例化 服务类，来提供该服务。 
-
-为了确保服务类可以提供该服务，就要使用*注入器*来注册它。注入器是一个对象，负责当应用要求获取它的实例时选择和注入该提供者。默认情况下，Angular CLI 命令 `ng generate service` 会通过给 `@Injectable()` 装饰器添加 `providedIn: 'root'` 元数据的形式，用*根注入器*将服务注册成为提供者。
-
-```ts
-@Injectable({
-  providedIn: 'root',
-})
-```
-
-当在顶层提供该服务时，Angular 就会为服务类创建一个单一的、共享的实例，并把它注入到任何想要它的类上。 在 `@Injectable` 元数据中注册该提供者，还能允许 Angular 通过移除那些完全没有用过的服务来进行优化。 
 
 # 内部指令
 
@@ -206,17 +186,154 @@ parentMsg: string = '我来自Parent Component的！';
 
  `  *ngIf`  判断的值为false，那么会 从 DOM 中移除了 `  *ngIf`  的宿主元素。
 
+# 服务
+
+服务是在彼此不认识的类之间共享信息的好方法。
+
+## 新建服务
+
+1、使用Angular CLI创建服务`HeroService`
+
+```
+ng generate service hero
+```
+
+执行上面命令后，生成如下文件：`src/app/hero.service.ts`。
+
+2、修改`src/app/hero.service.ts`，可以获取`src/app/mock-heroes.ts`里的数据
+
+```typescript
+import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { Hero } from './hero';
+import { HEROES } from './mock-heroes';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class HeroService {
+    getHero(id: number): Observable<Hero> {
+        return of(HEROES.find(hero => hero.id === id ));
+    }
+
+    getHeroes(): Observable<Hero[]> {
+        return of(HEROES);
+    }
+}
+```
+
+`src/app/mock-heroes.ts`文件内容
+
+```typescript
+import { Hero } from './hero';
+
+export const HEROES: Hero[] = [
+  { id: 11, name: 'Dr Nice' },
+  { id: 12, name: 'Narco' },
+  { id: 13, name: 'Bombasto' },
+  { id: 14, name: 'Celeritas' },
+  { id: 15, name: 'Magneta' },
+  { id: 16, name: 'RubberMan' },
+  { id: 17, name: 'Dynama' },
+  { id: 18, name: 'Dr IQ' },
+  { id: 19, name: 'Magma' },
+  { id: 20, name: 'Tornado' }
+];
+```
+
+**@Injectable()**  
+
+标记性元数据，表示一个类可以由 `Injector` 进行创建。 `@Injectable()`  标记的类将会提供一个可注入的服务 
+
+`@Injectable()` 装饰器会接受该服务的元数据对象，就像 `@Component()` 对组件类的作用一样。 
+
+必须先注册一个*服务提供者*，来让服务类在依赖注入系统中可用，Angular 才能把它注入到组件中。所谓服务提供者就是某种可用来创建或交付一个服务的东西；在这里，它通过实例化 服务类，来提供该服务。 
+
+为了确保服务类可以提供该服务，就要使用*注入器*来注册它。注入器是一个对象，负责当应用要求获取它的实例时选择和注入该提供者。默认情况下，Angular CLI 命令 `ng generate service` 会通过给 `@Injectable()` 装饰器添加 `providedIn: 'root'` 元数据的形式，用**根注入器**将服务注册成为提供者。
+
+```ts
+@Injectable({
+  providedIn: 'root',
+})
+```
+
+当在顶层提供该服务时，Angular 就会为服务类创建一个单一的、共享的实例，并把它注入到任何想要它的类上。 在 `@Injectable` 元数据中注册该提供者，还能允许 Angular 通过移除那些完全没有用过的服务来进行优化。 
+
+## **使用服务**
+
+1、`src/app/app.module.ts`里引入服务`HeroService`
+
+```typescript
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppComponent } from './app.component';
+import { HeroesComponent } from './heroes/heroes.component';
+import { HeroDetailComponent } from './hero-detail/hero-detail.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+
+import { HeroService } from './hero.service';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HeroesComponent,
+    HeroDetailComponent,
+    DashboardComponent
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [
+    HeroService
+  ],
+  bootstrap: [
+    AppComponent
+  ]
+})
+export class AppModule { }
+```
+
+2、`src/app/heroes/heroes.component.ts`组件里引入`HeroService`
+
+```typescript
+import { Component, OnInit } from '@angular/core';
+import {Hero} from '../hero';
+import { HeroService } from '../hero.service';
+import { MessageService } from '../message.service';
+
+@Component({
+    selector: 'app-heroes',
+    templateUrl: './heroes.component.html',
+    styleUrls: ['./heroes.component.scss']
+})
+export class HeroesComponent implements OnInit {
+
+    heroes: Hero[];
+
+    constructor(private heroService: HeroService) { }
+
+    ngOnInit(): void {
+        this.getHeroes();
+    }
+
+    getHeroes(): void {
+        this.heroService.getHeroes().subscribe(heroes => this.heroes = heroes);
+    }
+}
+```
+
 # 路由
 
 ## 添加 `AppRoutingModule`
 
 在 Angular 中，最好在一个独立的顶层模块中加载和配置路由器，它专注于路由功能，然后由根模块 `AppModule` 导入它 
 
-按照惯例，在用CLI创建项目，选择路由是，这个模块类的名字叫做 `AppRoutingModule`，并且位于 `src/app` 下的 `app-routing.module.ts` 文件中。 
+**按照惯例，在用CLI创建项目时，选择路由是，这个模块类的名字叫做 `AppRoutingModule`，并且位于 `src/app` 下的 `app-routing.module.ts` 文件中**。 
+
+`src/app/app-routing.module.ts`文件
 
 ```ts
-// src/app/app-routing.module.ts
-
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
@@ -229,20 +346,51 @@ const routes: Routes = [];
 export class AppRoutingModule { }
 ```
 
+**具体创建路由语法**
+
+使用CLI生成
+
+```
+ng generate module app-routing --flat --module=app
+```
+
+> `--flat`将文件放入`src/app`而不是其自己的文件夹中。
+> `--module=app`告诉CLI在`imports`数组中注册它`AppModule`。
+
 ### 路由
 
-*Routes* 告诉路由器，当用户单击链接或将 URL 粘贴进浏览器地址栏时要显示哪个视图 
+`Routes`告诉路由器，当用户单击链接或将 URL 粘贴进浏览器地址栏时要显示哪个视图 
+
+修改`src/app/app-routing.module.ts`，引用组件
 
 ```ts
-// src/app/app-routing.module.ts
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { HeroesComponent } from './heroes/heroes.component';
+import { MessagesComponent } from './messages/messages.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { HeroDetailComponent } from './hero-detail/hero-detail.component';
 
-/* ... */
+const routes: Routes = [{
+    path: 'heroes',
+    component: HeroesComponent
+}, {
+    path: 'messages',
+    component: MessagesComponent
+}, {
+    path: 'dashboard',
+    component: DashboardComponent
+}, {
+    path: '',
+    redirectTo: '/dashboard',
+    pathMatch: 'full'
+}];
 
-const routes: Routes = [
-  { path: 'heroes', component: HeroesComponent }
-];
-
-/* ... */
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
 ```
 
 ### [`RouterModule.forRoot()`](https://angular.cn/tutorial/toh-pt5#routermoduleforroot) 
@@ -252,9 +400,6 @@ const routes: Routes = [
 将 `RouterModule` 添加到 `AppRoutingModule` 的 `imports` 数组中，同时通过调用 `RouterModule.forRoot()` 来用这些 `routes` 配置 `AppRoutingModule` 
 
 ```ts
-// src/app/app-routing.module.ts
-/* ... */
-
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
@@ -276,7 +421,7 @@ export class AppRoutingModule { }
 <router-outlet></router-outlet>
 ```
 
-## 添加路由链接 (`routerLink`)
+## 添加路由`routerLink`
 
 理想情况下，用户应该能通过点击链接进行导航，而不用被迫把路由的 URL 粘贴到地址栏。
 
@@ -295,7 +440,9 @@ export class AppRoutingModule { }
 
 [`routerLink` 属性](https://angular.cn/tutorial/toh-pt5#routerlink)的值为 `"/heroes"`，路由器会用它来匹配出指向 `HeroesComponent` 的路由。 `routerLink` 是 [`RouterLink` 指令](https://angular.cn/api/router/RouterLink)的选择器，它会把用户的点击转换为路由器的导航操作。 它是 `RouterModule` 中的另一个公共指令。
 
-组件模板里也可以使用` routerLink ` ，修改过的` DashboardComponent `模板如下：
+**组件模板里也可以使用` routerLink `** ，eg：
+
+修改过的` DashboardComponent `模板如下：
 
 ```html
 <!-- src/app/dashboard/dashboard.component.html -->
@@ -310,58 +457,57 @@ export class AppRoutingModule { }
 </div>
 ```
 
+app-routing.module.ts里增加个路由配置：
+
+```typescript
+const routes: Routes = [{
+    /* ... */
+}, {
+    path: 'detail/:id',
+    component: HeroDetailComponent
+}];
+```
+
 ## 添加默认路由
 
 当应用启动时，浏览器的地址栏指向了网站的根路径。 它没有匹配到任何现存路由，因此路由器也不会导航到任何地方。 `<router-outlet>` 下方是空白的。 
 
+修改app-routing.module.ts，添加默认路由
+
 ```ts
-// src/app/app-routing.module.ts
-
-/* ... */
-
 const routes: Routes = [{
     path: '', // 默认
     redirectTo: '/dashboard',
     pathMatch: 'full'
 }, {
-    path: 'heroes',
-    component: HeroesComponent
-}, {
-    path: 'messages',
-    component: MessagesComponent
-}, {
-    path: 'dashboard',
-    component: DashboardComponent
-}, {
-    path: 'detail/:id',
-    component: HeroDetailComponent
+    /* ... */
 }];
-
-/* ... */
 ```
 
 ## 组件支持路由
 
-组件里引入ActivatedRoute、Location
+`src/app/hero-detail/hero-detail.component.ts`组件里引入`ActivatedRoute、Location`
 
 ```ts
-// src/app/hero-detail/hero-detail.component.ts
-
+import { Component, OnInit, Input } from '@angular/core';
+import { HeroService } from '../hero.service';
+import { Hero } from '../hero';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { HeroService }  from '../hero.service';
+@Component({
+    selector: 'app-hero-detail',
+    templateUrl: './hero-detail.component.html',
+    styleUrls: ['./hero-detail.component.scss']
+})
+export class HeroDetailComponent implements OnInit {
+    hero: Hero;
 
-/* ... */
+    constructor(private heroService: HeroService, private activatedRoute: ActivatedRoute, private location: Location) { }
 
-export class HeroDetailComponent {
-    constructor(
-  		private route: ActivatedRoute,
-  		private heroService: HeroService,
-  		private location: Location
-	) {}
-    
-    /* ... */
+    ngOnInit(): void {
+        this.getHero();
+    }
 }
 ```
 
@@ -371,25 +517,15 @@ export class HeroDetailComponent {
 
 [`location`](https://angular.cn/api/common/Location) 是一个 Angular 的服务，用来与浏览器打交道。 
 
-### 从路由中提取参数
+**组件从路由中提取参数**，`src/app/hero-detail/hero-detail.component.ts`的`class`添加方法`getHero()`
 
 ```ts
-// src/app/hero-detail/hero-detail.component.ts
-
-/* ... */
-
-ngOnInit(): void {
-  this.getHero();
-}
-
 getHero(): void {
   // +'123'可以将字符串123转换数字123
   const id = +this.route.snapshot.paramMap.get('id');
   this.heroService.getHero(id)
     .subscribe(hero => this.hero = hero);
 }
-
-/* ... */
 ```
 
 `route.snapshot` 是一个路由信息的静态快照，抓取自组件刚刚创建完毕之后。 
@@ -398,18 +534,12 @@ getHero(): void {
 
 路由参数总会是字符串。 JavaScript 的 (+) 操作符会把字符串转换成数字 
 
-### 原路返回
+**原路返回**，`src/app/hero-detail/hero-detail.component.ts`的`class`添加方法`goBack()`
 
 ```ts
-// src/app/hero-detail/hero-detail.component.ts
-
-/* ... */
-
 goBack(): void {
   this.location.back();
 }
-
-/* ... */
 ```
 
 # HTTP服务
@@ -420,19 +550,15 @@ goBack(): void {
 
 要让 `HttpClient` 在应用中随处可用，需要两个步骤。
 
-1、用导入语句把它添加到根模块 `AppModule` 中： 
+1、用导入语句把`HttpClientModule`添加到根模块 `AppModule` 中，修改`src/app/app.module.ts`：
 
 ```ts
-// src/app/app.module.ts (HttpClientModule import)
-
-import { HttpClientModule }    from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 ```
 
 2、仍然在 `AppModule` 中，把 `HttpClientModule` 添加到 `imports` 数组中： 
 
 ```ts
-// src/app/app.module.ts (imports array excerpt)
-
 @NgModule({
   imports: [
     HttpClientModule,
@@ -442,32 +568,28 @@ import { HttpClientModule }    from '@angular/common/http';
 
 ## 通过 `HttpClient` 发送请求
 
-1、在 `HeroService ` 中导入 `HttpClient` 和 `HttpHeaders` ：
+1、在 `src/app/hero.service.ts`中导入 `HttpClient` 和 `HttpHeaders` ：
 
 ```ts
-// src/app/hero.service.ts (import HTTP symbols)
-
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 ```
 
-2、仍然在 `HeroService` 中，把 `HttpClient` 注入到构造函数中一个名叫 `http` 的私有属性中。 
+2、仍然在  `src/app/hero.service.ts`中，在`class`中把 `HttpClient` 注入到构造函数中一个名叫 `http` 的私有属性中。 
 
 ```ts
-// src/app/hero.service.ts
-
-constructor(private http: HttpClient, private messageService: MessageService) {
+constructor(private http: HttpClient) {
 }
 ```
 
-3、使用` http`属性发送请求
+3、仍然在  `src/app/hero.service.ts`中，修改`getHeroes()`，使用` http`属性发送请求
 
 ```ts
-// src/app/hero.service.ts
+private heroesUrl = 'api/heroes'; 
 
-this.http.get<Hero[]>('url')
+getHeroes(): Observable<Hero[]> {
+ 	 return this.http.get<Hero[]>(this.heroesUrl)
+}
 ```
-
-
 
 # 注意
 
@@ -552,15 +674,38 @@ added 1458 packages from 1215 contributors in 120.549s
 
 ```
 
-## 双向绑定
+## 双向绑定 `FormsModule`
 
 **[(ngModel)]** 是 Angular 的双向数据绑定语法。 
 
 ngModel属于一个可选模块 `FormsModule`，必须自行添加此模块才能使用该指令 ：
 
-1、打开`AppModule` (`app.module.ts`) 从 `@angular/forms` 库中导入 `FormsModule` 符号 ；
+1、打开`AppModule` (`src/app/app.module.ts`) 从 `@angular/forms` 库中导入 `FormsModule` 符号 ；
 
-2、把 `FormsModule` 添加到 `@NgModule` 元数据的 `imports` 数组中，`imports` 是该应用所需外部模块的列表 。
+2、把 `FormsModule` 添加到 `@NgModule` 元数据的 `imports` 数组中，`imports` 是该应用所需外部模块的列表 。
+
+```typescript
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    AppRoutingModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
 
 ## 每个组件都必须声明在（且只能声明在）一个 [NgModule](https://angular.cn/guide/ngmodules) 中 
 
