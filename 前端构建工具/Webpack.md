@@ -287,7 +287,7 @@ npm i clean-webpack-plugin -D
 修改webpack的配置文件
 
 ```js
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
     ...
