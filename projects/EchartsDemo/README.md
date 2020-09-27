@@ -334,6 +334,9 @@ $ npm install clean-webpack-plugin -D
 
 # html模板
 $ npm install html-webpack-plugin -D
+
+# 开发环境
+$ npm install webpack-dev-server -D
 ```
 
 ### `src/index.html`（html模板）
@@ -356,6 +359,7 @@ $ npm install html-webpack-plugin -D
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
     mode: 'development',
@@ -382,8 +386,49 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             template: 'src/index.html'
-        })
-    ]
+        }),
+        new webpack.HotModuleReplacementPlugin()
+    ],
+    devServer: {
+        contentBase: '../dist',
+        port: '8081',
+        open: true, // 自动打开浏览器
+        hot: true,
+        hotOnly: true
+    }
+}
+```
+
+### `package.json`（完善后）
+
+```json
+{
+  "name": "EchartsDemo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --config build/webpack.config.js",
+    "build": "webpack --config build/webpack.config.js",
+    "babel": "babel src -d dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "echarts": "^4.9.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "babel-loader": "^8.1.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "html-webpack-plugin": "^4.5.0",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  }
 }
 ```
 
