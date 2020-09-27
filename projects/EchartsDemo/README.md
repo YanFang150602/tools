@@ -66,7 +66,7 @@ export const bar = {
         <script src="./main.js"></script>
     </head>
     <body>
-        <div id="root" style="width: 600px;height:400px;"></div>
+        <div id="root"></div>
     </body>
 </html>
 ```
@@ -239,24 +239,11 @@ module.exports = {
 
 2、上面问题解决后，页面乱码？
 
-上述两个问题，都跟`src/index.html`有关：
+3、控制台不报错，页面依然空白？
 
-```html
-<!DOCTYPE html>
-<html>
-    <head>
-        <!-- 解决页面乱码 -->
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    </head>
-    <body>
-        <div id="root" style="width: 600px;height:400px;"></div>
-    </body>
-    <!-- main.js引入位置调整，解决dom为null引起控制台报错，页面空白 -->
-    <script src="./main.js"></script>
-</html>
-```
+上述3个问题，都跟`src/index.html`有关，请看：<u>`dist/index.html`(修改后)</u>
 
-3、为什么移除`babel-preset-es2015`?
+4、为什么移除`babel-preset-es2015`?
 
 `npm run build`失败，报下面的错：
 
@@ -317,4 +304,86 @@ npm ERR! A complete log of this run can be found in:
 npm ERR!     C:\Users\ywx964151\AppData\Roaming\npm-cache\_logs\2020-09-27T03_09_50_945Z-debug.log
 ```
 
-### 
+### `dist/index.html`(修改后)
+
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- 解决页面乱码 -->
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    </head>
+    <body>
+        <!-- 添加style解决控制台不报错，页面依然空白-->
+        <div id="root" style="width: 600px;height:400px;"></div>
+    </body>
+    <!-- main.js引入位置调整，解决dom为null引起控制台报错，页面空白 -->
+    <script src="./main.js"></script>
+</html>
+```
+
+### 编译后达到效果
+
+执行`npm run build`，编译成功，浏览器上直接访问`dist/index.html`，页面上可以显示出`Echarts`的图表
+
+## 完善下webpack的编译
+
+```shell
+# 清空dist目录
+$ npm install clean-webpack-plugin -D
+
+# html模板
+$ npm install html-webpack-plugin -D
+```
+
+### `src/index.html`（html模板）
+
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    </head>
+    <body>
+        <div id="root" style="width: 600px;height:400px;"></div>
+    </body>
+</html>
+```
+
+### `build/webpack.config.js`(完善后)
+
+```js
+const path = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+    mode: 'development',
+    entry: {
+        main: "./src/main.js"
+    },
+    output: {
+        filename: '[name].js',
+        path: path.resolve(__dirname, '../dist'),
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loader: 'babel-loader'
+            }
+        ]
+    },
+    plugins: [
+        new CleanWebpackPlugin({
+            // webpack --watch时，不要移除index.html
+            cleanStaleWebpackAssets: false
+        }),
+        new HtmlWebpackPlugin({
+            template: 'src/index.html'
+        })
+    ]
+}
+```
+
