@@ -203,4 +203,11 @@ touch .gitignore
 
 最后记得将这个文件添加到Git中去，这样其它的小伙伴也就不用再次加一遍啦。
 
+# 查看某个文件的提交记录
+
+```bash
+git log --pretty=oneline 文件路径
+git show commitid 文件路径
+```
+
 
