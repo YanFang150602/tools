@@ -71,7 +71,9 @@ export const bar = {
 </html>
 ```
 
-## 配置文件`.babelrc`
+## 使用`babel`转码
+
+### `.babelrc`配置文件
 
 Babel参考网址：http://www.ruanyifeng.com/blog/2016/01/babel.html
 
@@ -92,9 +94,7 @@ Babel的配置文件是`.babelrc`，存放在项目的根目录下。**使用Bab
 $ npm install --save-dev babel-preset-es2015
 ```
 
-## 命令行转码`babel-cli`
-
-使用`babel-cli`命令行转码
+### `babel-cli`命令行转码
 
 ```shell
 # 全局安装
@@ -104,7 +104,7 @@ $ npm install --global babel-cli
 $ npm install --save-dev babel-cli
 ```
 
-### 基本语法
+使用`babel-cli`命令行转码，基本语法
 
 ```shell
 # 转码结果输出到标准输出
@@ -125,8 +125,6 @@ $ babel src -d lib
 # -s 参数生成source map文件
 $ babel src -d lib -s
 ```
-
-### `package.json`里配置`script`
 
 在`package.json`里配置`script`，可以通过`npm run build`调用脚本编译：
 
@@ -151,7 +149,7 @@ $ babel src -d lib -s
 }
 ```
 
-### Babel转码未达到效果
+### `babel`转码未达到效果
 
 执行`npm run build`，编译成功，但浏览器上直接打开`dist/index.html`，报`require`没有定义
 
