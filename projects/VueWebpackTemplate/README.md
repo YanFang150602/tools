@@ -153,3 +153,15 @@ new Vue({
     </body>
 </html>
 ```
+
+## 遇到问题
+
+1、`npm run start`报错，浏览器控制台显示错误`Uncaught Error: Cannot find module 'strip-ansi' at webpackMissingModule`？
+
+调整`build/webpack.config.js`文件里的`resolve`下`extensions`配置：
+
+```js
+resolve: {
+    extensions: ['.vue', '.js']
+}
+```
