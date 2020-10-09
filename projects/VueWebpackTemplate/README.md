@@ -75,7 +75,7 @@ module.exports = {
 }
 ```
 
-### package.json
+### `package.json`
 
 ```json
 {
@@ -107,7 +107,7 @@ module.exports = {
 
 ## 源文件
 
-### src/app.vue
+### `src/app.vue`
 
 ```vue
 <template>
@@ -127,7 +127,7 @@ module.exports = {
 </script>
 ```
 
-### src/index.js
+### `src/index.js`
 
 ```js
 import Vue from 'vue';
@@ -141,7 +141,7 @@ new Vue({
 }).$mount(root);
 ```
 
-### src/index.html
+### `src/index.html`
 
 ```html
 <!DOCTYPE html>
