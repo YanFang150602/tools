@@ -1,4 +1,4 @@
-#VSCode 插件离线安装的步骤
+# VSCode 插件离线安装的步骤
 
 1. 打开 VSCode 插件市场网址 Extensions for the Visual Studio family of product，输入你想要的插件名称，比如这里我想要安装的是 Markdown All in One 插件
 
@@ -660,3 +660,9 @@ gv-gray-color-theme.json文件内容
 	]
 }
 ```
+
+# VSCode 打开新文件覆盖旧文件解决办法
+
+ .vscode 中默认开启了preview，此时临时单击打开的文件在打开新文件时会被覆盖，若需要保留之前打开的文件，则可双击文件（在资源管理器栏或者文件标题）或者修改文件，文件就不会被覆盖。
+
+若要关闭此功能，则可在左下角单击设置，settings-> Workbench->Editor Management 里去掉Enable Preview 的勾选项，此时单击的文件都会被保留。

@@ -117,6 +117,138 @@ name
 如果 `<router-view>`设置了名称，则会渲染对应的路由配置中 components 下的相应组件。查看 命名视图 中的例子。
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+# vuex
+
+在`vuex`里面，`state`里面是存放数据的（类似于`vue`里面的`data`），`mutations`里面存放的是各种函数方法，用来改变`state`里面的数据的方法。
+
+## state
+
+`state`里面的数据在使用的时候，一般是挂在`computed`里面的，因为如果你挂在`data`上面，只会赋值一次，不会跟着`vuex`里面的变化而同步变化，当然也可以通过`watch $store`去解决这个问题，如下：
+
+```js
+computed: {
+    hasBg(){
+        return this.$store.state.hasBg
+    }
+}
+```
+
+```js
+watch : {
+    '$store.state.hasBg' : {
+        handler(newVal,oldVal){
+            console.log(newVal)
+        }
+    }
+}
+```
+
+接着再说mapState
+
+## mapState
+
+`mapState`，作用就是可以在`computed`里面少写一些代码，使用如下:
+
+```js
+import { mapState } from 'vuex'
+......
+computed : mapState({
+    //vuex里的数据，两种写法：
+    leftFocus : 'leftFocus',
+    hasBg : (state) => state.hasBg,
+    ......
+})
+```
+
+`...mapState`，这个就是`...`的用法，使用之后变得更加方便：
+
+```js
+import { mapState } from 'vuex'
+......
+computed : {
+    ...mapState({
+        leftFocus:'leftFocus',
+        loadingNum:'loadingNum',
+        hasBg:'hasBg'
+    }),
+    ......
+}
+```
+
+`mapState`里面或者直接写成：
+
+```js
+import { mapState } from 'vuex'
+......
+computed : {
+    ...mapState([
+        'leftFocus',
+        'loadingNum',
+        'hasBg'
+    ]),
+    ......
+}
+
+```
+
+## mutation
+
+```js
+const store = new Vuex.Store({
+  state: {
+    count: 1
+  },
+  mutations: {
+    increment (state) {
+      // 变更状态
+      state.count++
+    }
+  }
+})
+```
+
+```js
+// 组件,根组件里已注册store
+this.$store.commit('increment')
+```
+
+**Mutation 必须是同步函数**
+
+## mapMutation
+
+`mapMutations` 和 `mapState` 用法一样，`mapMutations`是用来存放`vuex`里面的`mutations`函数的，如下：
+
+```js
+import {mapMutations} from 'vuex'
+......
+methods : {
+    ...mapMutations([
+        'updateBg'
+    ]),
+}
+```
+
+使用 `mapMutations` 辅助函数将组件中的 `methods` 映射为 `store.commit` 调用（需要在根节点注入 `store`）。
+
+```js
+import { mapMutations } from 'vuex'
+
+export default {
+  // ...
+  methods: {
+    ...mapMutations([
+      'increment', // 将 `this.increment()` 映射为 `this.$store.commit('increment')`
+
+      // `mapMutations` 也支持载荷：
+      'incrementBy' // 将 `this.incrementBy(amount)` 映射为 `this.$store.commit('incrementBy', amount)`
+    ]),
+    ...mapMutations({
+      add: 'increment' // 将 `this.add()` 映射为 `this.$store.commit('increment')`
+    })
+  }
+}
+```
+
 # vue-i18n
 
 仓库地址：https://github.com/kazupon/vue-i18n
@@ -411,7 +543,7 @@ window.app = new Vue({
 # 非父子Bus通信
 
 vue 2 使用Bus.js进行兄弟(非父子)组件通信 简单案例
-vue2中废弃了$dispatch和$broadcast广播和分发事件的方法。父子组件中可以用props和$emit()进行通信。如何实现非父子组件间的通信，可以通过实例一个vue实例Bus作为媒介，要相互通信的兄弟组件之中，都引入Bus，之后通过分别调用Bus事件触发和监听来实现组件之间的通信和参数传递。
+vue2中废弃了`$dispatch`和`$broadcast`分发和广播事件的方法。父子组件中可以用`props`和`$emit()`进行通信。如何实现非父子组件间的通信，可以通过实例一个vue实例Bus作为媒介，要相互通信的兄弟组件之中，都引入Bus，之后通过分别调用Bus事件触发和监听来实现组件之间的通信和参数传递。
 
 
 首先需要在任意地方添加一个bus.js
@@ -420,7 +552,7 @@ vue2中废弃了$dispatch和$broadcast广播和分发事件的方法。父子组
 
 ```js
 import Vue from 'vue'
-export default new Vue;
+export default new Vue();
 ```
 
 在需要通信的组件里都引入Bus.js
@@ -431,7 +563,7 @@ import Bus from './bus.js'
 ```
 
 接下来就是要组件通信了
-添加一个 触发 #emit的事件按钮
+添加一个 触发 `#emit`的事件按钮
 
 ```vue
 <template>
@@ -453,8 +585,8 @@ export default {
 </script>
 ```
 
-打开要和$emit通信的另外一个组件
-在钩子函数中监听msg事件
+打开要和`$emit`通信的另外一个组件
+在钩子函数中监听`msg`事件
 
 ```vue
 <template>
@@ -481,9 +613,86 @@ export default {
 </script>
 ```
 
-最后<p>会显示来自$emit传来的信息
+最后 `<p>` 会显示来自 `$emit`传来的信息
+
+# vue中v-model使用计算属性，双向绑定失效
+
+在vue中v-model绑定了一个值到val中，用到了计算属性监测val的变化，但是使用了computed之后，v-model的双向绑定失效
+
+```html
+<div class="flex f7" style="width: 0" v-if="isIos || isAndroid">
+    <input
+    	class="f7"
+        type="text"
+        v-model="getAddress"
+        :placeholder="$t('withdraw.adsToast')"/>
+    <div class="f1 img-cont" @click="scan()">
+     	<img src="../../assets/img/ic-withdrawAds.png" class="ic-ads"/>
+    </div>
+</div> 
+```
+
+<div class = "flex f7" style = "width: 0" v-if="isIos || isAndroid">
+    <input class = "f7" type = "text" v-model = "getAddress" :placeholder = "$t('withdraw.adsToast')"/>
+    <div class = "f1 img-cont" @click = "scan()">
+     <img src = "../../assets/img/ic-withdrawAds.png"
+             class = "ic-ads"/>
+    </div></div> 
+
+```js
+computed: {
+    getAddress: {
+        get: function () {
+            if(this.$store.state.updateAddress){
+            	this.address = this.$store.state.updateAddress
+            }
+            return this.address
+        }
+    }
+}
+```
+
+输入地址之后再输入下面其他input值，地址值变为空，打印this.address为空
+
+后来在计算属性中加入get和set解决了双向绑定问题
+
+```js
+computed: {
+    getAddress: {
+        get: function () {
+            if(this.$store.state.updateAddress){
+            	this.address = this.$store.state.updateAddress
+            }
+            return this.address
+        },
+        set: function (value) {
+            this.address = value
+        }
+    }
+}
+```
+
+### v-model基础用法
+
+(详见[https://cn.vuejs.org/v2/guide/forms.html#%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95](https://cn.vuejs.org/v2/guide/forms.html#基础用法))
+
+你可以用 v-model 指令在表单` <input>`、`<textarea>` 及 `<select>` 元素上创建双向数据绑定。它会根据控件类型自动选取正确的方法来更新元素。尽管有些神奇，但 `v-model` 本质上不过是语法糖。它负责监听用户的输入事件以更新数据，并对一些极端场景进行一些特殊处理。
+
+`v-model` 会忽略所有表单元素的 `value`、`checked`、`selected` 特性的初始值而总是将 Vue 实例的数据作为数据来源。你应该通过 JavaScript 在组件的 data 选项中声明初始值。
+
+`v-model` 在内部为不同的输入元素使用不同的属性并抛出不同的事件：
+
+- `text` 和 `textarea` 元素使用 `value` 属性和 `input` 事件；
+
+- `checkbox` 和 `radio` 使用 `checked` 属性和 `change` 事件；
+
+- `select` 字段将 `value` 作为 `prop` 并将 `change` 作为事件。
+
+对于需要使用输入法 (如中文、日文、韩文等) 的语言，你会发现 `v-model` 不会在输入法组合文字过程中得到更新。如果你也想处理这个过程，请使用 `input` 事件。
+
+在文本区域插值 (`<textarea>{{text}}</textarea>`) 并不会生效，应用 `v-model `来代替。
 
 # 注意点
 
-1、computed里配的属性，如果依赖了其他属性，给该属性赋值时，注意添加setter方法；
-2、this.$nextTrick(function(){});Vue实例里属性都响应over后，会触发其中的回调函数；
+1、`computed`里配的属性，如果依赖了其他属性，给该属性赋值时，注意添加`setter`方法；
+2、`this.$nextTrick(function(){});` Vue实例里属性都响应over后，会触发其中的回调函数；
