@@ -165,7 +165,48 @@ var promise = getPromise();
 promise.then((data) => {}, (error) => {}, (notify) => {}).catch();
 ```
 
+# 样式绑定
 
+## ng-class
+
+### 对象写法
+
+> ng-class=”{‘class1’ : isTrue, ‘class2’ : !isTrue,………………….}”
+
+### 三元表达式写法
+
+> ng-class=” obj ? ‘class1 ‘: ‘class2’ “
+
+### 匹配模式-对象写法
+
+> ng-class=”{ ‘class1’:style1, ‘class2’:style2, ‘class3’:style3,}[inputClassName]”
+
+------
+
+```
+$scope.style1={
+    "font-size":"12px",
+    "padding":"12px"
+}
+$scope.style2={
+    "font-size":"16px",
+    "padding":"16px"
+}
+$scope.style3={
+    "font-size":"20px",
+    "padding":"20px"
+}
+```
+
+## ng-style
+
+```
+<span ng-style='obj'></span>
+$scope.obj={
+    "font-size":"16px",
+    "padding":"20px"
+}
+```
 
 # Angular-ui-router
 
