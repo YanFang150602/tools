@@ -223,12 +223,12 @@ this.$refs.win.$refs.ruleForm.validate(valid => {
 
 ```html
 <a-select
-  v-model="默认展示的内容"
-  placeholder="--Select"
+  size="small"
+  v-model=""
   @change="change"
 >
   <a-select-option
-    :value="item.value"
+    :value="item.label"
     v-for="(item, index) in optionList"
     :key="index"
   >
@@ -376,29 +376,13 @@ Vue.component('schedule-opration', {
 ### 表头点击事件
 
 ```js
-    titleClick(title) {
-        if (/id="ip_plus"/.test(title)) {
-          this.peerIPList.push({});
-        } else if (/id="ip_minus"/.test(title)) {
-          // 删除选中的
-          if (this.delPeerIPList.length) {
-            this.peerIPList = this.peerIPList.filter(item => {
-              let filter = true;
-              for (let i = 0; i < this.delPeerIPList.length; i++) {
-                if (item['peer-ip'] === this.delPeerIPList[i]) {
-                  this.vpnPeerIPPlusOptions({ label: item['peer-ip'] });
-                  filter = false;
-                  break;
-                }
-              }
-              return filter;
-            });
-          } else {
-            this.$message.info('请至少选中一条记录！');
-          }
-          this.delPeerIPList = [];
-        }
-    },
+titleClick(title) {
+    if (/id="ip_plus"/.test(title)) {
+
+    } else if (/id="ip_minus"/.test(title)) {
+
+    }
+},
 ```
 
 ### 单元格合并
@@ -432,8 +416,6 @@ CellMerge(rowIndex, rowData, field) {
       });
     },
 ```
-
-
 
 ## 表格上方功能
 
