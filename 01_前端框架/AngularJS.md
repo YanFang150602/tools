@@ -14,7 +14,7 @@
 
 `angularjs.js`里会判断是否有导入`JQuery`，如果有导入，会将`JQuery`赋值给`angular.element`，否则使用`angularjs`里自带的`JQlite`
 
-# $scope.$apply()
+# `$scope.$apply()`
 
 修改` $scope`（作用域）里的数据时，为了确保数据同步到了`angular context`中，所以经常会在后面加上` $scope.$apply()`
 
