@@ -118,6 +118,91 @@
 </html>
 ```
 
+# `$scope.$watch()`
+
+`$watch`是一个`scope`函数，用于监听模型变化，当你的模型部分发生变化时它会通知你。
+
+```js
+ $watch(watchExpression, listener, objectEquality);
+```
+
+每个参数的说明如下：
+
+1. `watchExpression`：监听的对象，它可以是一个angular表达式如`name`,或函数如`function(){return $scope.name}`。
+2. `listener`：当`watchExpression`变化时会被调用的函数或者表达式,它接收3个参数：`newValue`(新值), `oldValue`(旧值), `scope`(作用域的引用)
+3. `objectEquality`：是否深度监听，如果设置为`true`,它告诉Angular检查所监控的对象中每一个属性的变化. 如果你希望监控数组的个别元素或者对象的属性而不是一个普通的值, 那么你应该使用它
+
+ 监测一个属性的变化：
+
+```js
+$scope.name = 'hello';
+
+var watch = $scope.$watch('name',function(newValue,oldValue, scope){
+
+        console.log(newValue);
+
+        console.log(oldValue);
+
+});
+
+$timeout(function(){
+
+        $scope.name = "world";
+
+},1000);
+```
+
+监测多个属性：
+
+```html
+<body ng-app="app" ng-controller="first">
+        <button ng-click="name='a'">1</button>
+        <button ng-click="name='b'">2</button>
+        <button ng-click="name='c'">3</button>
+        <button ng-click="type=2">4</button>
+        <button ng-click="type=3">5</button>
+        <p>{{name}}</p>
+    </body>
+    <script type="text/javascript">
+        var app = angular.module("app", []);
+        app.controller("first", function($scope) {
+            $scope.name = 'q';
+            $scope.type = 1;
+
+            function te() {
+                console.log($scope.name+" "+ $scope.type);
+            }
+            $scope.$watch('name+type', function(newValue, oldValue) {
+                te();
+            });
+        })
+    </script>
+```
+
+ 
+
+ 
+
+**$watch性能问题**
+
+太多的$watch将会导致性能问题，$watch如果不再使用，我们最好将其释放掉。
+
+$watch函数返回一个注销监听的函数，如果我们想监控一个属性，然后在稍后注销它，可以使用下面的方式：
+
+var watch = $scope.$watch('someModel.someProperty', callback);
+
+//...
+
+watch();
+
+ 
+
+还有2个和$watch相关的函数：
+
+$watchGroup(watchExpressions, listener);
+
+$watchCollection(obj, listener);
+
 # AngularJS内置服务
 
 ## $q
