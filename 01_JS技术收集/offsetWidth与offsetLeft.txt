@@ -1,0 +1,178 @@
+https://blog.csdn.net/willard_cui/article/details/81712989
+
+1、offsetWidth: 为元素的width+元素的padding+边框的宽度
+
+
+2、offsetLeft、offsetTop、offsetRight、offsetBottom
+
+以offsetLeft为例进行说明，在不同的浏览器中其值不同，且与父元素的position属性（relative,absolute,fixed）有关。现分以下几种情况说明：（测试所用的浏览器版本为：Chrome 68.0.3440.106， opera54.0， Firefox61.0.1和IE11.0）
+
+2.1在父元素均不设置position属性时，在Chrome，opera和IE浏览器中offsetLeft是元素边框外侧到浏览器窗口内侧的距离且body.offsetLeft=0；在firefox浏览器中offsetLeft是元素边框外侧到body内侧的距离body.offsetLeft=-边框宽度
+
+
+2.2当父元素设置position元素时又分为两种情况，
+
+2.2.1如果父元素时body且body设置了position属性，在Chrome和opera浏览器中offsetLeft是元素边框外侧到body边框外侧的距离，2.2.2如果父元素不是body元素且设置了position属性时，offsetLeft为元素边框外侧到父元素边框内侧的距离（各浏览器情况一致）。
+
+3、下面通过实例进行说明（Chrome浏览器）：
+
+Html结构为
+
+
+
+Css样式：将body，container，box, content的margin和padding都设置为10px，container长宽为300px，box长宽为100px，content长宽为50px，都设置宽度为5px的边框。具体查看下方源代码。效果如下图
+
+3.1 offsetWidth
+
+container.offsetWidth =container的width+padding+边框宽度=300+2×10+2×5=330
+
+console.log(container.offsetWidth)输出结果为
+
+
+
+3.2
+
+3.2.1父元素均不设置position属性
+
+document.body.offsetLeft=0
+
+document.body.offsetLeft= container边框外侧到窗口内侧的距离=body.margin+body边框宽度+container.margin+container.padding+container的left=10+5+10+10=35px;
+
+aBoxes[0].offsetLeft=第一个div.box边框外侧到窗口内侧的距离=body.margin+body边框宽度+container.margin+container.padding+container边框宽度+box.margin+box.padding=10+5+10+10+5+10+10px=60px;
+
+ 
+
+console.log(document.body.offsetLeft)
+
+console.log(document.body.offsetLeft)
+
+console.log(aBoxes[0].offsetLeft)输出结果为
+
+
+
+2.2.2将body的position设置为relative
+
+ document.body.offsetLeft=0
+
+   container.offsetLeft=container边框外侧到body边框外侧的距离= body边框宽度+container.margin+container.padding =5+10+10=25px;
+
+aBoxes[0].offsetLeft=第一个div.box边框外侧到body边框外侧的距离= body边框宽度+container.margin+container.padding+container边框宽度+box.margin+box.padding=5+10+10+5+10+10px=50px;
+
+console.log(document.body.offsetLeft);
+
+console.log(container.offsetLeft);
+
+console.log(aBoxes[0].offsetLeft);输出结果为
+
+
+
+2.2.3将container的position设置为relative，并设置其left为100px，body不设置position属性。
+
+oContainer.offsetLeft= 为container边框外侧到窗口内侧的距离=body.margin+body边框宽度+container的left+container.margin+container.padding+container的left=10+5+100+10+10=135;
+
+ 
+
+   aBoxes[0].offsetLeft=第一个div.box边框外侧到container边框内侧的距离= container.padding+box.margin=10+10px=20;
+
+    aBoxes[1].offsetLeft= 第二个div.box边框外侧到container边框内侧的距离= container.padding + box.margin +box.offsetWidth+2*box.margin=10+10+130+10+10=170;
+
+ 
+
+console.log(oContainer.offsetLeft);
+
+console.log(aBoxes[0].offsetLeft);
+
+console.log(aBoxes[1].offsetLeft);输出结果为：
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		body{
+			//position: relative;
+			margin:10px;
+			padding: 10px;
+			border: 5px solid black;
+		}
+		#container{
+			position: relative;
+			left: 100px;
+			margin: 10px;
+			padding: 10px;
+			border: 5px solid #ccc;
+			background: red;
+			width: 300px;
+			height: 300px;
+			//overflow: hidden;
+		}
+		.box{
+			position: relative;
+			float: left;
+			margin: 10px;
+			padding: 10px;
+			border: 5px solid black;
+			background: orange;
+			width: 100px;
+			height: 100px;
+		}
+		.content{
+			margin: 10px;
+			padding: 10px;
+			border: 5px solid black;
+			background: yellow;
+			width: 50px;
+			height: 50px;
+		}
+	</style>
+</head>
+<body>
+	<div id="container">            
+		<div class="box">
+                      <div class="content"></div>
+		</div>
+		<div class="box">
+			<div class="content"></div>
+		</div>
+	</div>
+ <script type="text/javascript">
+ 	var oContainer=document.getElementById("container");
+ 	var aBoxes=getElementsByClassName(oContainer,"box");
+ 	    
+     console.log("container.offsetWidth="+oContainer.offsetWidth);
+     console.log("box.offsetWidth="+aBoxes[0].offsetWidth);
+     //console.log(aBoxes[1].firstElementChild.offsetWidth);
+    
+    //console.log(document.body.offsetLeft);
+    console.log("container.offsetLeft="+oContainer.offsetLeft);
+    console.log("box1.offsetLeft="+aBoxes[0].offsetLeft);
+    console.log("box2.offsetLeft="+aBoxes[1].offsetLeft);
+    console.log("content.offsetLeft="+aBoxes[1].firstElementChild.offsetLeft);
+    // alert(document.body.offsetLeft);
+    // alert(oContainer.offsetLeft);
+    // alert(aBoxes[0].offsetLeft);
+    // alert(aBoxes[1].offsetLeft);
+    // alert(aBoxes[1].firstElementChild.offsetLeft);
+ 
+ 	function getElementsByClassName(parent,className){
+ 
+ 		var allChildren=parent.getElementsByTagName("*");
+ 		var arr=[];
+ 		for(var i=0;i<allChildren.length;i++){
+ 			if (allChildren[i].className==className) {
+ 				arr.push(allChildren[i]); 				
+ 			}
+ 		} 		
+ 		return arr;	 		
+ 	}
+ </script>
+	
+</body>
+
