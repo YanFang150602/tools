@@ -138,17 +138,12 @@
 $scope.name = 'hello';
 
 var watch = $scope.$watch('name',function(newValue,oldValue, scope){
-
         console.log(newValue);
-
         console.log(oldValue);
-
 });
 
 $timeout(function(){
-
         $scope.name = "world";
-
 },1000);
 ```
 
@@ -250,16 +245,433 @@ var promise = getPromise();
 promise.then((data) => {}, (error) => {}, (notify) => {}).catch();
 ```
 
+# angular-ui-router
 
+## 什么是ui-router
 
-# Angular-ui-router
+ui-router是AngularUI库最有用的组件之一（AngularUI库由AngularJS社区构建）。它是一个第三方路由框架，允许通过状态机制组织接口，而不是简单的URL路由。
 
-1、需要另导入angular-ui-router.js文件，必须先导入angular.js
+**作用**
 
-2、试图文件里加入ui-view
+-  和ngRoute功能一样，可以定义在任意状态内的模板都处在<ui-view>中
+-  与ngRoute不同的是，每个模板中可以包含自己的<ui-view>中，也就是我们说的嵌套路由
+
+## 配置使用ui-router
+
+### 导入js文件
+
+需要注意的是：必须导入angular.min.js这个文件，且angular.min.js必须导入在angular-ui-router.min.js前面。
 
 ```html
-<!-- ui-view -->
+<script type="text/javascript" src="JS/angular.min.js"></script>
+<script type="text/javascript" src="JS/angular-ui-router.min.js"></script>
+```
+
+### 注入angular模块
+
+```js
+var app = angular.module('myApp', ['ui.router']);
+```
+
+注入的名字“ui.router”，可在angular-ui-router.min.js里找到。
+
+### 定义视图
+
+ui-view替代的是ngroute路由的ng-view
+
+```html
 <div ui-view></div>
+<!-- 或者 -->
+<ui-view></ui-view>
+```
+
+### 配置路由状态
+
+和ngRoute不同的是，ngRoute路由是要设置在\$routeProvider上， 而ui-router是将状态设置在\$stateProvider上：
+
+$stateProvider.state(stateName, stateConfig)
+
+stateName:    字符串
+
+stateConfig：object对象，可以设置url、template、controller等属性
+
+```js
+app.config(["$stateProvider", function ($stateProvider){    	
+    $stateProvider.state("stateName", { //导航用的名字，如<a ui-sref="login">login</a>里的login
+		url: '/',    //访问路径 
+		template:'<div>模板内容......</div>'
+	});
+ }]);
+```
+
+**有三种显示template的方式**：
+
+- template： 一个html内容字符串或一个能返回html字符串的函数；
+
+```
+template: '<h1>Home</h1>'
+```
+
+- templateUrl： 一个html模板的路径字符串或者是一个能返回URL路径字符串的函数；
+
+```
+templateUrl: 'first.html'
+```
+
+first.html
+
+```html
+<h4>First Page</h4><br />
+<p>Hello, {{FirstCtrl.test}}</p>
+```
+
+- templateProvider：一个能返回URL路径字符串的函数。
+
+```
+templateProvider: function() {
+	return '<h1>Second Page: {{t}}</h1>';
+}
+```
+
+**两种方法加载controller**：
+
+- 引用相应的js外部文件
+
+```
+controller: 'HomeController'
+```
+
+home.js
+
+```js
+'use strict';
+//Define `C1Controller`
+app.controller('HomeController', function() {
+    alert('HomeController is on!');
+});
+```
+
+- 内置controller的方法
+
+```js
+ controller: function() {
+     this.test = 'world!';
+ },
+ controllerAs: 'FirstCtrl'
+```
+
+用了this.test（this指当前对象）声明并初始化变量，为了能在该状态对应页面中显示变量值，需要将controller设置别别名，controllerAs: ‘FirstCtrl’，然后在对应html模板中用{{FirstCtrl.test}}；
+
+```js
+controller: function($scope) {
+	$scope.t = 'SecondController is on!';
+}
+```
+
+在controller中用\$scope创建变量，在对应html模板中用{{t}}，这里$scope对应的就是该controller的作用域，所以在与其关联的html文本中，直接写出该变量即可。
+
+### 路由切换
+
+激活state有3种方法： 
+
+- 调用`$state.go('stateName');`方法；
+
+- 在html文档中\<ui-view>区域之外的地方，添加`<a ui-sref='stateName'>stateName</a>`链接，等页面渲染之后可以通过点击该链接进入所选状态所对应的页面；
+
+- 在地址栏中输入state中定义过的url，随后Enter直接访问。
+
+方法1： 如果需要在页面一加载时就要显示某一状态，需要在app.js后面加一下代码：
+
+```js
+app.run(function($state) {
+    $state.go('stateName');
+});
+```
+
+上述代码是在加载TrialApp模块的时候调用`$state.go('stateName');`，以激活stateName状态。
+
+方法2：在html文档中\<ui-view>区域之外的地方，添加`<a ui-sref='stateName'>stateName</a>`链接，代码如下：
+
+```html
+<a ui-sref='home'>Home</a>
+<br />
+<a ui-sref='first'>First</a>
+<br />
+<a ui-sref='second'>Second</a>
+```
+
+### 简单示例
+
+```html
+<html>
+  <head>   
+    <title>ui-router</title>
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<!-- 导入JS -->
+	<script type="text/javascript" src="JS/angular.min.js"></script>
+	<script type="text/javascript" src="JS/angular-ui-router.min.js"></script>	
+  </head>
+  <body>	
+	<div ng-app="myApp">		
+		<div ui-view></div>	<!-- 视图 -->		
+	</div>	
+  </body>
+  <script type="text/javascript">
+	//定义模板，并注入ui-router
+	var app = angular.module('myApp', ['ui.router']);	
+	//对服务进行参数初始化，这里配stateProvider服务的视图控制
+	app.config(["$stateProvider", function ($stateProvider) {    	
+        $stateProvider		
+            .state("home", {
+                url: '/',   
+                template:'<div>模板内容......</div>'
+            });   
+    }]);  
+  </script>
+</html>
+```
+
+## 嵌套路由的实现
+
+通过url参数的设置实现路由的嵌套（父路由与子路由通过”.“连接就形成了子路由）。嵌套路由可实现多层次的ui-view。
+
+```html
+ <body >	
+	<div ng-app="myApp" >
+		<a ui-sref="parent">点我显示父view内容</a>
+		<a ui-sref="parent.child">点我显示父view与子view内容</a>
+		<div ui-view></div>	<!-- 父View -->		
+	</div>	
+  </body>
+  
+  
+  <script type="text/javascript">
+	var app = angular.module('myApp', ['ui.router']);	
+	app.config(["$stateProvider",  function ($stateProvider) {    	
+        $stateProvider		
+		.state("parent", {//父路由
+			url: '/parent',  
+			template:'<div>parent'
+					+'<div ui-view><div>'// 子View
+					+'</div>'
+		}) 		
+	    .state("parent.child", {//子路由
+			url: '/child',    
+			template:'<div>child</div>'
+		})     
+    }]);
+  </script>
+```
+
+上面的是**相对路径方式**：
+
+'parent’将匹配…/index.html#/parent;
+
+'parent.child’将匹配…/index.html#/parent/child。
+
+若改成**绝对路径方式**，则需要在子url里加上^:
+
+```js
+.state("parent.child", {
+	url: '^/child',    
+	template:'<div>child</div>'
+}) 
+```
+
+此时，'parent’将匹配…/index.html#/parent； 'parent.child’将匹配…/index.html#/child。
+
+## 通过views实现多视图
+
+多个视图时，使用views属性。该属性里包含了哪些ui-view，则对应的template或templateUrl里的内容就会填充该ui-view。
+
+同一个状态下有多个视图示例：
+
+```html
+<body >    
+    <div ng-app="myApp" >
+        <a ui-sref="index">点我显示index内容</a>
+        <div ui-view="header"></div>  
+        <div ui-view="nav"></div>  
+        <div ui-view="body"></div>      
+    </div>  
+  </body>
+
+  <script type="text/javascript">
+    var app = angular.module('myApp', ['ui.router']);   
+    app.config(["$stateProvider",  function ($stateProvider) {      
+        $stateProvider     
+        .state("index", {
+            url: '/index',  
+            views:{
+				'header':{template:"<div>头部内容</div>"},
+				'nav':{template:"<div>菜单内容</div>"},
+				'body':{template:"<div>展示内容</div>"}
+			}
+        });  
+    }]);
+  </script>
+```
+
+## ui-view的定位
+
+@的作用 是用来绝对定位view，即说明该ui-view属于哪个模板。如：'header@index’表示名为header的view属于index模板。绝对和相对路径的效果一样，请看如下代码：
+
+```html
+<body >    
+    <div ng-app="myApp" >
+        <a ui-sref="index">show index</a>
+		<a ui-sref="index.content1">content111111</a>
+		<a ui-sref="index.content2">content222222</a>
+		<div ui-view="index"><div>             
+    </div>  
+  </body>
+
+  <script type="text/javascript">
+    var app = angular.module('myApp', ['ui.router']);   
+    app.config(["$stateProvider",  function ($stateProvider) {      
+        $stateProvider     
+        .state("index", {
+            url: '/index',  
+            views:{
+				'index':{template:"<div><div ui-view='header'></div>  <div ui-view='nav'></div> <div ui-view='body'></div>  </div>"},
+				//这里必须要绝对定位
+				'header@index':{template:"<div>头部内容header</div>"},
+				'nav@index':{template:"<div>菜单内容nav</div>"},
+				'body@index':{template:"<div>展示内容contents</div>"}
+			}
+        })    
+		//绝对定位
+		.state("index.content1", {
+            url: '/content1',  
+            views:{
+				'body@index':{template:"<div>content11111111111111111</div>"}
+				//'body@index'表时名为body的view使用index模板
+			}
+        })	
+		//相对定位：该状态的里的名为body的ui-view为相对路径下的（即没有说明具体是哪个模板下的）
+		.state("index.content2", {
+            url: '/content2',  
+            views:{
+				'body':{template:"<div>content2222222222222222222</div>"}//
+			}
+        })		
+           
+    }]);
+
+  </script>
+```
+
+由上面代码可知，相对定位不能找到的ui-view需要用@来绝对定位。
+
+## URL路由传参（通过$stateParams服务获取参数）
+
+有url：'/index/:id', 和 url： '/index/{id}',两种形式传参：
+
+```html
+<body >    
+    <div ng-app="myApp" >
+        <a ui-sref="index({id:30})">show index</a>    
+		<a ui-sref="test({username:'peter'})">show test</a>
+		<div ui-view></div>
+    </div>  
+  </body>
+
+  <script type="text/javascript">
+    var app = angular.module('myApp', ['ui.router']);   
+    app.config(["$stateProvider",  function ($stateProvider) {      
+        $stateProvider     
+		.state("home", {
+            url: '/',  
+			template:"<div>homePage</div>"
+           
+        })
+		.state("index", {
+            url: '/index/:id',  
+			template:"<div>indexcontent</div>",
+            controller:function($stateParams){
+				alert($stateParams.id)
+			}
+        })	
+		.state("test", {
+            url: '/test/:username',  
+			template:"<div>testContent</div>",
+            controller:function($stateParams){
+				alert($stateParams.username)
+			}
+        })			
+           
+    }]);
+
+  </script>
+```
+
+## Resolve（预载入）
+
+使用预载入功能，开发者可以预先载入一系列依赖或者数据，然后注入到控制器中。在ngRoute中resolve选项可以允许开发者在路由到达前载入数据保证（promises）。在使用这个选项时比使用angular-route有更大的自由度。
+
+预载入选项需要一个对象，这个对象的key即要注入到控制器的依赖，这个对象的value为需要被载入的factory服务。
+
+如果传入的时字符串，angular-route会试图匹配已经注册的服务。如果传入的是函数，该函数将会被注入，并且该函数返回的值便是控制器的依赖之一。如果该函数返回一个数据保证（promise），这个数据保证将在控制器被实例化前被预先载入并且数据会被注入到控制器中。
+
+```html
+<body >    
+    <div ng-app="myApp" >
+        <a ui-sref="index">show index</a>    
+		<div ui-view></div>
+    </div>  
+  </body>
+
+  <script type="text/javascript">
+    var app = angular.module('myApp', ['ui.router']);   
+    app.config(["$stateProvider",  function ($stateProvider) {      
+        $stateProvider     
+		.state("home", {
+            url: '/',  
+			template:"<div>homePage</div>"
+           
+        })
+		.state("index", {
+            url: '/index/{id}',  
+			template:"<div>indexcontent</div>",
+			resolve: {
+				//这个函数的值会被直接返回，因为它不是数据保证
+				user: function() {
+				  return {
+					name: "peter",
+					email: "audiogroup@qq.com"
+				  }
+				},
+				//这个函数为数据保证, 因此它将在控制器被实例化之前载入。
+				detail: function($http) {
+				  return $http({
+					method: 'JSONP',
+					url: '/current_details'
+				  });
+				},
+				//前一个数据保证也可作为依赖注入到其他数据保证中！（这个非常实用）
+				myId: function($http, detail) {
+				  $http({
+					method: 'GET',
+					url: 'http://facebook.com/api/current_user',
+					params: {
+					  email: currentDetails.data.emails[0]
+					}
+				  })
+				}
+			},
+            controller:function(user,detail,myId$scope){
+				alert(user.name)
+				alert(user.email)
+				console.log(detail)
+			}
+        })					
+           
+    }]);
+
+  </script>
 ```
 
