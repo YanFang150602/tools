@@ -206,6 +206,8 @@ $watchCollection(obj, listener);
 
 `defer`的意思是延迟，`$q.defer()` 可以创建一个`deferred`延迟对象实例，实例旨在暴露派生的`Promise` 实例，`Promise`就是一种对执行结果不确定的一种预先定义，如果成功，就`resovle`；如果失败，就`reject`，就像事先给出了一些承诺。 
 
+### 基本使用
+
 1、通过`$q`服务注册一个延迟对象：
 
 ```js
@@ -243,6 +245,121 @@ function getPromise(){
 
 var promise = getPromise();
 promise.then((data) => {}, (error) => {}, (notify) => {}).catch();
+```
+
+### 方法
+
+**defer()方法**
+
+在$q中，可以使用resolve方法，变成完成状态；使用reject方法，变成拒绝状态。
+
+```html
+<html ng-app="myApp">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="http://apps.bdimg.com/libs/angular.js/1.2.16/angular.min.js"></script>
+</head>
+<body>
+	<div ng-controller="myctrl">
+		{{test}}
+	</div>
+	<script type="text/javascript">
+		 var myAppModule = angular.module("myApp",[]);
+		 myAppModule.controller("myctrl",["$scope","$q",function($scope, $ q ){
+		 	$scope.test = 1;//这个只是用来测试angularjs是否正常的，没其他的作用
+
+		 	var defer1 = $q.defer();
+		 	var promise1 = defer1.promise;
+
+		 	promise1
+		 	.then(function(value){
+		 		console.log("in promise1 ---- success");
+		 		console.log(value);
+		 	},function(value){
+		 		console.log("in promise1 ---- error");
+		 		console.log(value);
+		 	},function(value){
+		 		console.log("in promise1 ---- notify");
+		 		console.log(value);
+		 	})
+		 	.catch(function(e){
+		 		console.log("in promise1 ---- catch");
+		 		console.log(e);
+		 	})
+		 	.finally(function(value){
+		 		console.log('in promise1 ---- finally');
+		 		console.log(value);
+		 	});
+
+		 	defer1.resolve("hello");
+		 	// defer1.reject("sorry,reject");
+		 }]);
+	</script>
+</body>
+</html>
+```
+
+其中defer()用于创建一个deferred对象，defer.promise用于返回一个promise对象，来定义then方法。then中有三个参数，分别是成功回调、失败回调、状态变更回调。
+
+其中resolve中传入的变量或者函数返回结果，会当作第一个then方法的参数。then方法会返回一个promise对象，因此可以写成：
+
+```
+promise
+.then(a,b,c)
+.then(a,b,c)
+.then(a,b,c)
+.catch()
+.finally()
+```
+
+**all()方法**
+
+这个all()方法，可以把多个primise的数组合并成一个。当所有的promise执行成功后，会执行后面的回调。回调中的参数，是每个promise执行的结果。
+当批量的执行某些方法时，就可以使用这个方法。
+
+```js
+var funcA = function(){
+    console.log("funcA");
+    return "hello,funA";
+}
+var funcB = function(){
+    console.log("funcB");
+    return "hello,funB";
+}
+$q.all([funcA(),funcB()])
+    .then(function(result){
+    console.log(result);
+});
+```
+
+执行的结果：
+
+```
+funcA
+funcB
+Array [ "hello,funA", "hello,funB" ] 
+```
+
+**when()方法**
+
+when方法中可以传入一个参数，这个参数可能是一个值，可能是一个符合promise标准的外部对象。
+
+```js
+var funcA = function(){
+    console.log("funcA");
+    return "hello,funA";
+}
+$q.when(funcA())
+    .then(function(result){
+    console.log(result);
+});
+```
+
+当传入的参数不确定时，可以使用这个方法。
+
+```
+funcA
+hello,funA
 ```
 
 # angular-ui-router
@@ -447,7 +564,6 @@ app.run(function($state) {
 		<div ui-view></div>	<!-- 父View -->		
 	</div>	
   </body>
-  
   
   <script type="text/javascript">
 	var app = angular.module('myApp', ['ui.router']);	
@@ -663,7 +779,7 @@ app.run(function($state) {
 				  })
 				}
 			},
-            controller:function(user,detail,myId$scope){
+            controller:function(user,detail,myId,$scope){
 				alert(user.name)
 				alert(user.email)
 				console.log(detail)
