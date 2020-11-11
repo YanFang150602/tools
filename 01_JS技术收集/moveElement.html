@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>鼠标拖拽</title>
+    <style>
+        .box{
+            background-color: pink;
+            width:200px;
+            height:200px;
+            border-radius: 50%;
+            position: absolute;
+            top:20px;
+            left:100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+
+    </div>
+    <div style="width:100px;height:300px;background-color:red">
+    
+    </div>
+    <script>
+        window.onload = function(){
+            var box = document.getElementsByClassName('box')[0];
+            function drag (ele){
+                ele.onmousedown = function(e){
+                    var e = e || window.event;  
+                    //此处是为了兼容IE，因为IE中事件对象是作为全局对象( window.event )存在的；
+                    var pageX = e.pageX || e.clientX + document.documentElement.scrollLeft;
+                    var pageY = e.pageY || e.clientY + document.documentElement.scrollTop;
+                    //获取鼠标相对盒子的位置；
+                    var boxX = pageX - box.offsetLeft;
+                    var boxY = pageY - box.offsetTop;
+                    document.onmousemove = function(e){
+                        var e = e || window.event;
+                        var pageX = e.pageX || e.clientX + document.documentElement.scrollLeft;
+                        var pageY = e.pageY || e.clientY + document.documentElement.scrollTop;
+                      //将鼠标当前的坐标值减去鼠标相对盒子的位置，得到盒子当时的位置并将其赋值给盒子，实现移动效果
+                        box.style.left = pageX - boxX +'px';
+                        box.style.top = pageY - boxY + 'px';
+                    }
+                };
+                document.onmouseup = function () {
+                    //清除盒子的移动事件;
+                    document.onmousemove = null;
+                };
+            } ;
+            drag(box)
+        }
+    </script>
+</body>
+</html>
