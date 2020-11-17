@@ -322,7 +322,7 @@ module.exports = {
 
 你可以使用以下方式启用 CommonJS 语法：
 
-webpack.config.js
+#### webpack.config.js
 
 ```js
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -348,13 +348,13 @@ module.exports = {
 };
 ```
 
-#### `modules` 
+### `modules` 
 
 类型：`Object` 默认值：`undefined`
 
 用于配置 CSS Modules。
 
-##### `namedExport` 
+#### `namedExport` 
 
 类型：`Boolean` 类型：`false`
 
