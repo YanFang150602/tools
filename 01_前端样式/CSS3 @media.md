@@ -140,6 +140,267 @@ body {
 </html>
 ```
 
+# CSS3 多媒体查询实例
+
+本章节我们将为大家演示一些多媒体查询实例。
+
+开始之前我们先制作一个电子邮箱的链接列表。HTML 代码如下：
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+ul {
+    list-style-type: none;
+}
+
+ul li a {
+    color: green;
+    text-decoration: none;
+    padding: 3px;
+    display: block;
+}
+</style>
+</head>
+<body>
+
+<ul>
+  <li><a data-email="johndoe@example.com" href="mailto:johndoe@example.com">John Doe</a></li >
+  <li><a data-email="marymoe@example.com" href="mailto:marymoe@example.com">Mary Moe</a></li >
+  <li><a data-email="amandapanda@example.com" href="mailto:amandapanda@example.com">Amanda Panda</a>< /li>
+</ul>
+
+</body>
+</html>
+```
+
+注意 `data-email` 属性。在 HTML 中我们可以使用带 `data-` 前缀的属性来存储信息。
+
+## 520 到 699px 宽度 - 添加邮箱图标
+
+当浏览器的宽度在 520 到 699px, 邮箱链接前添加邮件图标：
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"> 
+<title>W3Cschool教程(w3cschool.cn)</title> 
+<style>
+ul {
+    list-style-type: none;
+}
+
+ul li a {
+    color: green;
+    text-decoration: none;
+    padding: 3px; 
+    display: block;
+}
+
+@media screen and (max-width: 699px) and (min-width: 520px) {
+    ul li a {
+        padding-left: 30px;
+        background: url(email-icon.png) left center no-repeat;
+    }
+}
+</style>
+</head>
+<body>
+
+<h1>重置浏览器窗口，查看效果!</h1>
+
+<ul>
+  <li><a data-email="johndoe@example.com" href="mailto:johndoe@example.com">John Doe</a></li>
+  <li><a data-email="marymoe@example.com" href="mailto:marymoe@example.com">Mary Moe</a></li>
+  <li><a data-email="amandapanda@example.com" href="mailto:amandapanda@example.com">Amanda Panda</a></li>
+</ul>
+
+</body>
+</html>
+```
+
+## 700 到 1000px - 添加文本前缀信息
+
+当浏览器的宽度在 700 到 1000px, 会在邮箱链接前添加 "Email: ":
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"> 
+<title>W3Cschool教程(w3cschool.cn)</title> 
+<style>
+ul {
+    list-style-type: none;
+}
+
+ul li a {
+    color: green;
+    text-decoration: none;
+    padding: 3px; 
+    display: block;
+}
+
+@media screen and (max-width: 699px) and (min-width: 520px) {
+    ul li a {
+        padding-left: 30px;
+        background: url(email-icon.png) left center no-repeat;
+    }
+}
+
+@media screen and (max-width: 1000px) and (min-width: 700px) {
+    ul li a:before {
+        content: "Email: ";
+        font-style: italic;
+        color: #666666;
+    }
+}
+</style>
+</head>
+<body>
+
+<h1>重置浏览器窗口，查看效果!</h1>
+
+<ul>
+  <li><a data-email="johndoe@example.com" href="mailto:johndoe@example.com">John Doe</a></li>
+  <li><a data-email="marymoe@example.com" href="mailto:marymoe@example.com">Mary Moe</a></li>
+  <li><a data-email="amandapanda@example.com" href="mailto:amandapanda@example.com">Amanda Panda</a></li>
+</ul>
+
+</body>
+</html>
+```
+
+## 大于 1001px 宽度 - 添加邮件地址
+
+当浏览器的宽度大于 1001px 时，会在链接后添加邮件地址接。
+
+我们会使用 `data-` 属性来为每个人名后添加邮件地址：
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"> 
+<title>W3Cschool教程(w3cschool.cn)</title> 
+<style>
+ul {
+    list-style-type: none;
+}
+
+ul li a {
+    color: green;
+    text-decoration: none;
+    padding: 3px; 
+    display: block;
+}
+
+@media screen and (max-width: 699px) and (min-width: 520px) {
+    ul li a {
+        padding-left: 30px;
+        background: url(email-icon.png) left center no-repeat;
+    }
+}
+
+@media screen and (max-width: 1000px) and (min-width: 700px) {
+    ul li a:before {
+        content: "Email: ";
+        font-style: italic;
+        color: #666666;
+    }
+}
+
+@media screen and (min-width: 1001px) {
+    ul li a:after {
+        content: " (" attr(data-email) ")";
+        font-size: 12px;
+        font-style: italic;
+        color: #666666;
+    }
+}
+</style>
+</head>
+<body>
+
+<h1>重置浏览器窗口，查看效果!</h1>
+
+<ul>
+  <li><a data-email="johndoe@example.com" href="mailto:johndoe@example.com">John Doe</a></li>
+  <li><a data-email="marymoe@example.com" href="mailto:marymoe@example.com">Mary Moe</a></li>
+  <li><a data-email="amandapanda@example.com" href="mailto:amandapanda@example.com">Amanda Panda</a></li>
+</ul>
+
+</body>
+</html>
+```
+
+## 大于 1151px 宽度 - 添加图标
+
+当浏览器的宽度大于 1001px 时，会在人名前添加图标。
+
+实例中，我们没有编写额外的查询块，我们可以在已有的查询媒体后使用逗号分隔来添加其他媒体查询 (类似 OR 操作符):
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"> 
+<title>W3Cschool教程(w3cschool.cn)</title> 
+<style>
+ul {
+    list-style-type: none;
+}
+
+ul li a {
+    color: green;
+    text-decoration: none;
+    padding: 3px; 
+    display: block;
+}
+
+@media screen and (max-width: 699px) and (min-width: 520px), (min-width: 1151px) {
+    ul li a {
+        padding-left: 30px;
+        background: url(email-icon.png) left center no-repeat;
+    }
+}
+
+@media screen and (max-width: 1000px) and (min-width: 700px) {
+    ul li a:before {
+        content: "Email: ";
+        font-style: italic;
+        color: #666666;
+    }
+}
+
+@media screen and (min-width: 1001px) {
+    ul li a:after {
+        content: " (" attr(data-email) ")";
+        font-size: 12px;
+        font-style: italic;
+        color: #666666;
+    }
+}
+</style>
+</head>
+<body>
+
+<h1>重置浏览器窗口，查看效果!</h1>
+
+<ul>
+  <li><a data-email="johndoe@example.com" href="mailto:johndoe@example.com">John Doe</a></li>
+  <li><a data-email="marymoe@example.com" href="mailto:marymoe@example.com">Mary Moe</a></li>
+  <li><a data-email="amandapanda@example.com" href="mailto:amandapanda@example.com">Amanda Panda</a></li>
+</ul>
+
+</body>
+</html>
+```
+
+
+
 # CSS3 @media查询
 
 ## 定义和使用
