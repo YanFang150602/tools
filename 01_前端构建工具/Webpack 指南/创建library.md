@@ -91,10 +91,7 @@ require(['webpackNumbers'], function ( webpackNumbers) {
 用户还可以通过 script 标签来加载和使用此 library：
 
 ```html
-  ...
-  <script src="https://unpkg.com/webpack-numbers"></script>
-  <script>
-    // ...<!doctype html>
+<!doctype html>
 <html>
   ...
   <script src="https://unpkg.com/webpack-numbers"></script>
@@ -269,6 +266,235 @@ externals: [
 如果设置了 `library` 但没设置 `libraryTarget`，则 `libraryTarget` 默认为 `var`，详细说明请查看 [output 配置文档](https://www.webpackjs.com/configuration/output)。查看 [`output.libraryTarget`](https://www.webpackjs.com/configuration/output#output-librarytarget)，以获取所有可用选项的详细列表。
 
 > 在 webpack 3.5.5 中，使用 `libraryTarget: { root:'_' }` 将无法正常工作（参考 [issue 4824](https://github.com/webpack/webpack/issues/4824)) 所述）。然而，可以设置 `libraryTarget: { var: '_' }` 来将 library 作为全局变量。
+
+### library相关说明
+
+#### library
+
+`string` 或 `object`（从 webpack 3.1.0 开始；用于 `libraryTarget: "umd"`）
+
+`output.library` 的值的作用，取决于[`output.libraryTarget`](https://www.webpackjs.com/configuration/output/#output-librarytarget) 选项的值；完整的详细信息请查阅该章节。注意，`output.libraryTarget` 的默认选项是 `var`，所以如果使用以下配置选项：
+
+```js
+output: {
+  library: "MyLibrary"
+}
+```
+
+如果生成的输出文件，是在 HTML 页面中作为一个 script 标签引入，则变量 `MyLibrary` 将与入口文件的返回值绑定。
+
+#### libraryTarget
+
+> 默认值： `"var"`
+
+配置如何暴露 library。可以使用下面的选项中的任意一个。注意，此选项与分配给 [`output.library`](https://www.webpackjs.com/configuration/output/#output-library) 的值一同使用。对于下面的所有示例，都假定将 `output.library` 的值配置为 `MyLibrary`。
+
+> *注意，下面的示例代码中的* `_entry_return_` *是入口起点返回的值。在 bundle 本身中，它是从入口起点、由 webpack 生成的函数的输出结果。*
+
+##### 暴露为一个变量
+
+这些选项将入口起点的返回值（例如，入口起点的任何导出值），在 bundle 包所引入的位置，赋值给 output.library 提供的变量名。
+
+- `libraryTarget: "var"` - （默认值）当 library 加载完成，**入口起点的返回值**将分配给一个变量：
+
+```js
+var MyLibrary = _entry_return_;
+
+// 在一个单独的 script……
+MyLibrary.doSomething();
+```
+
+> *当使用此选项时，将* `output.library` *设置为空，会因为没有变量导致无法赋值。*
+
+- `libraryTarget: "assign"` - 这将产生一个隐含的全局变量，可能会潜在地重新分配到全局中已存在的值（谨慎使用）。.
+
+```js
+MyLibrary = _entry_return_;
+```
+
+> 注意，如果 `MyLibrary` 在作用域中未在前面代码进行定义，则你的 library 将被设置在全局作用域内。
+
+> *当使用此选项时，将* `output.library` *设置为空，将产生一个破损的输出 bundle。*
+
+##### 通过在对象上赋值暴露
+
+这些选项将入口起点的返回值（例如，入口起点的任何导出值）赋值给一个特定对象的属性（此名称由 `output.library` 定义）下。
+
+如果 `output.library` 未赋值为一个非空字符串，则默认行为是，将入口起点返回的所有属性都赋值给一个对象（此对象由 `output.libraryTarget` 特定），通过如下代码片段：
+
+```js
+(function(e, a) {
+	for(var i in a)
+		e[i] = a[i];
+}(${output.libraryTarget}, _entry_return_));
+```
+
+> *注意，不设置* `output.library` *将导致由入口起点返回的所有属性，都会被赋值给给定的对象；这里并不会检查现有的属性名是否存在。*
+
+- `libraryTarget: "this"` - **入口起点的返回值**将分配给 this 的一个属性（此名称由 `output.library` 定义）下，`this` 的含义取决于你：
+
+```js
+this["MyLibrary"] = _entry_return_;
+
+// 在一个单独的 script……
+this.MyLibrary.doSomething();
+MyLibrary.doSomething(); // 如果 this 是 window
+```
+
+- `libraryTarget: "window"` - **入口起点的返回值**将使用 `output.library` 中定义的值，分配给 `window` 对象的这个属性下。
+
+```js
+window["MyLibrary"] = _entry_return_;
+
+window.MyLibrary.doSomething();
+```
+
+- `libraryTarget: "global"` - **入口起点的返回值**将使用 `output.library` 中定义的值，分配给 `global` 对象的这个属性下。
+
+```js
+global["MyLibrary"] = _entry_return_;
+
+global.MyLibrary.doSomething();
+```
+
+- `libraryTarget: "commonjs"` - **入口起点的返回值**将使用 `output.library` 中定义的值，分配给 exports 对象。这个名称也意味着，模块用于 CommonJS 环境：
+
+```js
+exports["MyLibrary"] = _entry_return_;
+
+require("MyLibrary").doSomething();
+```
+
+##### 模块定义系统
+
+这些选项将导致 bundle 带有更完整的模块头部，以确保与各种模块系统的兼容性。根据 `output.libraryTarget` 选项不同，`output.library` 选项将具有不同的含义。
+
+- `libraryTarget: "commonjs2"` - **入口起点的返回值**将分配给 `module.exports` 对象。这个名称也意味着模块用于 CommonJS 环境：
+
+```js
+module.exports = _entry_return_;
+```
+
+```js
+require("MyLibrary").doSomething();
+```
+
+注意，`output.library` 会被省略，因此对于此特定的 `output.libraryTarget`，无需再设置 `output.library` 。
+
+- `libraryTarget: "amd"` - 将你的 library 暴露为 AMD 模块。
+
+AMD 模块要求入口 chunk（例如使用 `<script>` 标签加载的第一个脚本）通过特定的属性定义，例如 `define` 和 `require`，它们通常由 RequireJS 或任何兼容的模块加载器提供（例如 almond）。否则，直接加载生成的 AMD bundle 将导致报错，如 `define is not defined`。
+
+所以，使用以下配置……
+
+```js
+output: {
+  library: "MyLibrary",
+  libraryTarget: "amd"
+}
+```
+
+生成的 output 将会使用 "MyLibrary" 作为模块名定义，即
+
+```js
+define("MyLibrary", [], function() {
+  return _entry_return_; // 此模块返回值，是入口 chunk 返回的值
+});
+```
+
+可以在 script 标签中，将 bundle 作为一个模块整体引入，并且可以像这样调用 bundle：
+
+```js
+require(['MyLibrary'], function(MyLibrary) {
+  // 使用 library 做一些事……
+});
+```
+
+如果 `output.library` 未定义，将会生成以下内容。
+
+```js
+define([], function() {
+  return _entry_return_; // 此模块返回值，是入口 chunk 返回的值
+});
+```
+
+如果直接加载 `<script>` 标签，此 bundle 无法按预期运行，或者根本无法正常运行（在 almond loader 中）。只能通过文件的实际路径，在 RequireJS 兼容的异步模块加载器中运行，因此在这种情况下，如果这些设置直接暴露在服务器上，那么 `output.path` 和 `output.filename` 对于这个特定的设置可能变得很重要。
+
+- `libraryTarget: "umd"` - 将你的 library 暴露为所有的模块定义下都可运行的方式。它将在 CommonJS, AMD 环境下运行，或将模块导出到 global 下的变量。了解更多请查看 [UMD 仓库](https://github.com/umdjs/umd)。
+
+在这个例子中，你需要 `library` 属性来命名你的模块：
+
+```js
+output: {
+  library: "MyLibrary",
+  libraryTarget: "umd"
+}
+```
+
+最终输出如下：
+
+```js
+(function webpackUniversalModuleDefinition(root, factory) {
+  if(typeof exports === 'object' && typeof module === 'object')
+    module.exports = factory();
+  else if(typeof define === 'function' && define.amd)
+    define([], factory);
+  else if(typeof exports === 'object')
+    exports["MyLibrary"] = factory();
+  else
+    root["MyLibrary"] = factory();
+})(typeof self !== 'undefined' ? self : this, function() {
+  return _entry_return_; // 此模块返回值，是入口 chunk 返回的值
+});
+```
+
+注意，省略 `library` 会导致将入口起点返回的所有属性，直接赋值给 root 对象，就像[对象分配章节](https://www.webpackjs.com/configuration/output/#expose-via-object-assignment)。例如：
+
+```js
+output: {
+  libraryTarget: "umd"
+}
+```
+
+输出结果如下：
+
+```js
+(function webpackUniversalModuleDefinition(root, factory) {
+  if(typeof exports === 'object' && typeof module === 'object')
+    module.exports = factory();
+  else if(typeof define === 'function' && define.amd)
+    define([], factory);
+  else {
+    var a = factory();
+    for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+  }
+})(typeof self !== 'undefined' ? self : this, function() {
+  return _entry_return_; // 此模块返回值，是入口 chunk 返回的值
+});
+```
+
+从 webpack 3.1.0 开始，你可以将 `library` 指定为一个对象，用于给每个 target 起不同的名称：
+
+```js
+output: {
+  library: {
+    root: "MyLibrary",
+    amd: "my-library",
+    commonjs: "my-common-library"
+  },
+  libraryTarget: "umd"
+}
+```
+
+##### 其他 Targets
+
+`libraryTarget: "jsonp"` - 这将把入口起点的返回值，包裹到一个 jsonp 包装容器中
+
+```
+MyLibrary(_entry_return_);
+```
+
+你的 library 的依赖将由 [`externals`](https://www.webpackjs.com/configuration/externals/) 配置定义。
 
 ### 最终步骤
 
