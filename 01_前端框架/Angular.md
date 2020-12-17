@@ -712,3 +712,6 @@ export class AppModule { }
 Angular CLI 在生成 组件的时候就自动把它加到了 `AppModule` 中 ；
 
 `AppModule` 声明了应用中的所有组件 。
+
+
+
