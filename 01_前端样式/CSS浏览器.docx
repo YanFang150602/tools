@@ -1,0 +1,266 @@
+§ 基础篇概要
+本篇涉及的内容包括浏览器、盒模型以及样式计算
+
+浏览器：谈到CSS，就会想到兼容性，想到兼容性就会涉及到浏览器，浏览器是一切CSS的运行环境。
+
+盒模型：CSS中最重要最核心的概念，所有的样式和排版都基于该概念进行。理解这个重要的概念才能更好地排版页面和布局页面，后面遇到排版和布局困难也能快速定位出问题所在。
+
+样式计算：当创建的样式表越来越复杂时，一个标签的样式将会受到越来越多的影响，这种影响可能来自周围的标签，也可能来自其自身，需要我们掌握CSS样式计算的规则。
+
+§ 浏览器
+五大浏览器：Chrome、Safari、Firefox、Opera、IExplorer/Edge
+
+§ 渲染引擎
+渲染引擎又名浏览器内核，指负责对网页语法解析并渲染成一张可视化页面的解析器。它是浏览器最核心最重要的部位，不同内核对网页语法的解析也有不同，因此同一网页语法在不同内核的浏览器中的渲染效果也可能不同，这就是常说的浏览器差异性。
+
+Google Chrome：Webkit(前期)、Blink(后期)
+
+Apple Safari：Webkit
+
+Mozilla Firefox：Gecko
+
+ASA Opera：Presto(前期)、Blink(后期)
+
+Microsoft IExplorer：Trident
+
+Microsoft Edge：Trident(前期)、Blink(后期)
+
+§ 渲染过程
+浏览器从最初接收请求得到HTML、CSS、JS等资源，然后解析、构建、渲染、布局、绘制、合成，到最后呈现在用户眼前界面的整个过程。
+
+解析文件
+
+将html文件转换为DOM树
+
+将css文件转换为CSSOM树
+
+将DOM树和CSSOM树合并生成渲染树
+
+绘制图层
+
+根据渲染树布局(回流)
+
+根据布局绘制(重绘)
+
+合成图层：合成图层显示在屏幕上
+
+在此涉及到两个核心概念：回流、重绘
+
+回流：几何属性需改变的渲染
+
+重绘：更改外观属性而不影响几何属性的渲染
+image.png
+
+§ 兼容性
+兼容性又名网站兼容性或网页兼容性，指网页在各种浏览器上的显示效果可能不同而产生浏览器和网页间的兼容问题。兼容性查询网址：Caniuse，本质原因是渲染引擎不同导致的
+
+磨平浏览器默认样式
+* {
+  margin: 0;
+  padding: 0;
+}
+插入浏览器私有属性
+div {
+  width: 100px;
+  height: 100px;
+  background-color: red;
+  /* Chrome、Safari、New Opera、New Edge */
+  -webkit-transform: translate(10px, 10px);
+  /* Firefox */
+  -moz-transform: translate(10px, 10px);
+  /* IExplorer、Old Edge */
+  -ms-transform: translate(10px, 10px);
+  /* Old Opera */
+  -o-transform: translate(10px, 10px);
+  /* 标准 */
+  transform: translate(10px, 10px);
+}
+§ 盒模型
+HTML节点被描述为一个盒模型，然后一个盒子套进另一个盒子中，再依据各个节点对应的CSS规则，最后渲染成一个井井有条的页面
+
+§ 组成
+margin：边距，外部透明区域，负责隔离相邻盒子
+
+border：边框，内部着色区域，负责隔离边距和填充
+
+padding：填充，内部着色区域，负责扩展盒子内部尺寸
+
+content：内容，以文本或节点存在的占用位置
+
+§ 类型
+盒模型分为标准盒模型和怪异盒模型（IE盒子模型），CSS3里提供一个属性用于声明盒模型的类型，它就是box-sizing
+
+content-box：标准盒模型(默认)
+
+border-box：怪异盒模型
+
+标准盒模型是W3C规范的标准，由margin + border + padding + content组成
+
+横向：margin + border + padding + content，width = content
+
+纵向：margin + border + padding + content，height = content
+
+怪异盒模型又名IE盒子模型，是IExplore制定的标准，也由margin + border + padding + content组成
+
+横向：margin + border + padding + content，width = border + padding + content
+
+纵向：margin + border + padding + content，height = border + padding + content
+
+§ 文档流
+文档流指节点在排版布局过程中默认使用从左往右从上往下的流式排列方式
+
+§ 分类
+HTML级别
+
+容器级元素：<div>、<table>、<ul>等
+
+文本级元素：<a>、<p>、<span>等
+
+CSS级别
+
+块级元素：<div>、<p>、<ul>等
+
+行内元素：<a>、<img>、<span>等
+
+§ 怪异现象
+空白折叠：HTML中换行编写行内元素，排版会出现5px空隙,有的浏览器是4px
+
+高矮不齐：行内元素统一以底边垂直对齐
+
+自动换行：排版若一行无法完成则换行接着排版
+
+§ 脱离文档流
+脱离文档流指节点脱离正常文档流后，在正常文档流中的其他节点将忽略该节点并填补其原先空间。文档一旦脱流，计算其父节点高度时不会将其高度纳入，脱流节点不占据空间，因此添加浮动或定位后会对周围节点布局产生或多或少的影响。
+文档流的脱流方式：
+
+浮动布局：float: left/right
+
+定位布局：position: absolute/fixed
+
+§ Float方式，节点参与浮动布局后，自身脱流但其文本不脱流
+节点使用float脱流时，会让其跳出正常文档流，其他节点会忽略该节点并填补其原先空间。但是该节点文本可不参与这个脱流效果，却会认同该节点所占据的空间并围绕它布局，这个就是常说的文字环绕效果的原理。
+
+<!--文字环绕-->
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="./textWrapper.css">
+</head>
+  <body>
+    <div class="outer" data-title="文字环绕，文字过少">
+      <div class="float">I am a floated element.</div>
+      I am text inside.
+    </div>
+    <div class="outer" data-title="文字环绕，文字过多">
+      <div class="float">I am a floated element.</div>
+      I am text inside. happy new year, happy new year, happy new year, happy new year, happy new year, happy new year, happy new year.
+    </div>
+    <!--创建BFC上下文-->
+    <div class="outer bfc" data-title="文字环绕，文字过少">
+      <div class="float">I am a floated element.</div>
+      I am text inside.
+    </div>
+    <div class="outer" data-title="文字环绕，文字过多">
+      <div class="float">I am a floated element.</div>
+      <div class="bfc">I am text inside. happy new year, happy new year, happy new year, happy new year, happy new year, happy new year, happy new year.</div>
+    </div>
+  </body>
+</html>
+.outer {
+  border: 5px dotted rgb(214 129 137);
+  border-radius: 5px;
+  width: 450px;
+  padding: 10px;
+  margin-bottom: 40px;
+  word-break: break-all;
+}
+ 
+.float {
+  padding: 10px;
+  border: 5px solid rgba(214,129,137,.4);
+  border-radius: 5px;
+  background-color: rgba(233,78,119,.4);
+  color: #fff;
+  float: left;
+  width: 200px;
+  margin: 0 20px 0 0;
+}
+ 
+.bfc {
+  overflow: hidden;
+}
+image.png
+
+§ Position方式，节点参与定位布局后，自身及其文本一起脱流
+节点使用position脱流时(只有absolute和fixed)，会让其及其文本一起跳出正常文档流，其他节点会忽略该节点并填补其原先空间。absolute绝对定位是相对往上遍历第一个包含非position:static的祖先节点定位，若无此节点则相对<body>定位；fixed固定定位是相对浏览器窗口定位。
+
+§ 样式计算
+当创建的样式表越来越复杂时，一个标签的样式将会受到越来越多的影响，这种影响可能来自周围的标签，也可能来自其自身。下面从这两方面去看看 CSS 样式的优先级
+
+§ CSS 的继承性
+CSS 的继承特性指的是应用在一个标签上的那些 CSS 属性被传到其子标签上
+
+<div>
+  <p></p>
+</div>
+如果<div> 有个属性background-color: red，则这个属性将被<p> 继承，即 <p> 也拥有属性background-color: red。
+
+CSS 优先规则1： 最近的祖先样式比其他祖先样式优先级高
+
+CSS 优先规则2："直接样式"比"祖先样式"优先级高
+
+§ 选择器的优先级
+CSS 7 种基础的选择器
+
+ID 选择器， 如 #id {}
+
+类选择器， 如 .class {}
+
+属性选择器， 如 a[id=css] {}
+
+伪类选择器， 如 :hover {}
+
+伪元素选择器， 如 ::before {}
+
+标签选择器， 如 span {}
+
+通配选择器， 如 * {}
+
+CSS 优先规则3：优先级关系：!important > 内联样式 > ID 选择器 > 类选择器 = 属性选择器 = 伪类选择器 > 标签选择器 = 伪元素选择器 > 通配选择器
+所有 CSS 的选择符由上述 7 种基础的选择器或者组合而成，组合的方式有 3 种：
+
+后代选择符： .father .child {}
+
+子选择符： .father > .child {}
+
+相邻选择符: .bro1 + .bro2 {}
+
+CSS 优先规则4：计算选择符中 ID 选择器的个数（a），计算选择符中类选择器、属性选择器以及伪类选择器的个数之和（b），计算选择符中标签选择器和伪元素选择器的个数之和（c）。按 a、b、c 的顺序依次比较大小，大的则优先级高，相等则比较下一个。若最后两个的选择符中 a、b、c 都相等，则按照"就近原则"来判断。
+§ 长度单位
+单位	定义	类型	描述
+px	像素	绝对单位	-
+pt	点	绝对单位	1pt = 1/72in
+pc	派	绝对单位	1pc = 12pt
+mm	毫米	绝对单位	-
+cm	厘米	绝对单位	-
+in	英寸	绝对单位	1in = 96px = 2.54cm
+%	百分比	相对单位	相对父节点
+em	M的宽度	相对单位	相对当前节点字体
+rem	M的宽度	相对单位	相对根节点字体，在Web文档的上下文中，根元素就是你的html元素。如果没有重置，html默认font-size:16px。
+ch	0的宽度	相对单位	相对当前节点字体
+ex	x的宽度	相对单位	相对当前节点字体
+vw	1%视窗宽度	相对单位	相对视窗
+vh	1%视窗高度	相对单位	相对视窗
+vmin	vw/vh最小者	相对单位	相对视窗
+vmax	vw/vh最大者	相对单位	相对视窗
+§ em 和 rem 比较
+单位	特点
+em	相对单位em是相对于元素本身的字体大小的。在css中唯一例外的是font-size属性，它的em和ex值指的是相对父元素的字体大小。
+rem	集相对大小和绝对大小的优点于一身，通过它既可以做到只修改根元素就成比例地调整所有字体大小，又可以避免（使用em）字体大小逐层复合的连锁反应
+body {
+  font-size: 10px;
+}
+ 
+h2 {
+  font-size: 1.5em;
+}
