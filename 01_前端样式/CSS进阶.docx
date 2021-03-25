@@ -108,3 +108,208 @@ for (let i = 0; i < 10000; i++) {
 多列布局：column系列属性
 格栅布局：display: grid/inline-grid、grid系列属性
 响应式布局：em/rem/vw/vh/vmin/vmax、媒体查询
+
+§ 浮动布局
+§ 文件环绕
+<!--文字环绕-->
+<div class="topDiv">
+  <div class="floatDiv">float left</div>
+  <div class="textDiv">xxxxxxxxxxxxxxxxxxyyyyyyyyyyy</div>
+</div>
+<div class="bottomDiv">zzzzzzzzzzzzzzzzzzzxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</div>
+.topDiv {
+  width: 200px;
+  border: 2px solid black;
+}
+ 
+.floatDiv {
+  width: 100px;
+  height: 100px;
+  border: 2px dotted red;
+  color: red;
+  margin: 4px;
+  float: left;
+}
+ 
+.bottomDiv {
+  width: 200px;
+  height: 100px;
+  margin: 5px 0;
+  border: 2px dotted black;
+  word-break: break-all;
+}
+ 
+.textDiv {
+  color: blue;
+  border: 2px solid blue;
+  word-break: break-all;
+}
+
+
+上面的文字环绕存在几个问题：
+
+我们可能希望文字（.textDiv）排列在浮动元素下方，或者，我们并不希望.textDiv两边有浮动元素存在。
+
+浮动元素排版超出了其父级元素（.topDiv），父元素的高度出现了塌缩，若没有文字高度的支撑，不考虑边框，父级元素高度会塌缩成零。
+
+浮动元素甚至影响到了其父元素的兄弟元素（.bottomDiv）排版。因为浮动元素脱离了文档流，.bottomDiv在计算元素位置的时候会忽略其影响，紧接着上一个元素的位置继续排列。
+
+§ 清除浮动
+§ clear属性清除
+.textDiv {
+  clear: left;
+}
+image.png
+我们把HTML中的.floatDiv和.textDiv交换一下位置，上面的方法并不能将.topDiv撑起来
+
+<!--文字环绕-->
+<div class="topDiv">
+  <div class="textDiv">xxxxxxxxxxxxxxxxxxyyyyyyyyyyy</div>
+  <div class="floatDiv">float left</div>
+</div>
+<div class="bottomDiv">zzzzzzzzzzzzzzzzzzzxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</div>
+image.png
+
+§ 父元素结束标签之前插入清除浮动的块级元素
+<div class="topDiv">
+  <div class="textDiv">xxxxxxxxxxxxxxxxxxyyyyyyyyyyy</div>
+  <div class="floatDiv">float left</div>
+  <div class="blankDiv"></div>
+</div>
+<div class="bottomDiv">zzzzzzzzzzzzzzzzzzzxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</div>
+.blankDiv {
+  clear: left
+}
+§ 利用伪元素（clearfix）清除浮动
+<div class="topDiv clearfix">
+  <div class="textDiv">xxxxxxxxxxxxxxxxxxyyyyyyyyyyy</div>
+  <div class="floatDiv">float left</div>
+</div>
+<div class="bottomDiv">zzzzzzzzzzzzzzzzzzzxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</div>
+.clearfix:after {
+  display: block;
+  visibility: hidden;
+  clear: both;
+  content: '';
+  height: 0;
+  font-size: 0;
+}
+
+§ 构造BFC（块级格式化上下文）清除浮动
+BFC是页面上一个独立且隔离的渲染区域，容器里的子节点不会在布局上影响到外面的节点，反之亦然，10 分钟理解 BFC 原理。
+
+规则
+
+子节点在垂直方向上按顺序放置
+
+子节点的垂直方向距离由margin决定，相邻节点的margin会发生重叠，以最大margin为合并值
+
+每个节点的margin-left/right与父节点的左边/右边相接触，即使处于浮动也如此，除非自行形成BFC
+
+BFC区域不会与同级浮动区域重叠
+
+BFC是一个隔离且不受外界影响的独立容器
+
+计算BFC高度时其浮动子节点也参与计算
+
+成因
+
+根节点：html
+
+非溢出可见节点：overflow: !visible
+
+浮动节点：float: left/right
+
+绝对定位节点：position: absolute/fixed
+
+被定义成块级的非块级节点：display: inline-block/table-cell/table-caption/flex/inline-flex
+
+父节点与正常文档流的子节点(非浮动)自动形成BFC
+
+场景
+
+清除浮动
+
+已知宽度水平居中
+
+防止浮动节点被覆盖
+
+防止垂直margin合并
+
+<div class="topDiv bfc">
+  <div class="textDiv">xxxxxxxxxxxxxxxxxxyyyyyyyyyyy</div>
+  <div class="floatDiv">float left</div>
+</div>
+<div class="bottomDiv">zzzzzzzzzzzzzzzzzzzxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</div>
+.bfc {
+  overflow: hidden;
+}
+§ 全屏布局
+经典的全屏布局由顶部、底部、主体三部分组成，其特点为三部分左右满屏拉伸、顶部底部高度固定和主体高度自适应，主要应用在主体布局。该布局很常见，也是大部分Web应用主体的主流布局。通常使用<header>、<footer>和<main>三个标签语义化排版，<main>内还可插入<aside>作为侧栏。
+
+<div class="fullscreen-layout">
+  <!--顶部-->
+  <header></header>
+  <!--主题-->
+  <main></main>
+  <!--底部-->
+  <footer></footer>
+</div>
+.fullscreen-layout {
+  width: 400px;
+  height: 400px;
+}
+image.png
+
+§ position + left/right/top/bottom
+顶部、底部和主体声明left: 0和right: 0将其左右部分满屏拉伸；顶部和底部声明top: 0和bottom: 0分别将其吸顶和吸底，并声明俩高度为固定值；将主体的top和bottom分别声明为顶部高度和底部高度。
+
+.fullscreen-layout {
+  position: relative;
+}
+ 
+header, footer, main {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+ 
+header {
+  top: 0;
+  height: 50px;
+  background-color: #f66;
+}
+ 
+footer {
+  bottom: 0;
+  height: 50px;
+  background-color: #66f;
+}
+ 
+main {
+  top: 50px;
+  bottom: 50px;
+  background-color: #3c9;
+}
+§ flex
+使用flex实现会更简洁。display:flex默认会令子节点横向排列，需声明flex-direction:column改变子节点排列方向为纵向排列；顶部和底部高度固定，所以主体声明flex:1让高度自适应即可。
+
+.fullscreen-layout {
+  display: flex;
+  flex-direction: column;
+}
+ 
+header {
+  height: 50px;
+  background-color: #f66;
+}
+ 
+footer {
+  height: 50px;
+  background-color: #66f;
+}
+ 
+main {
+  flex: 1;
+  background-color: #3c9;
+}
