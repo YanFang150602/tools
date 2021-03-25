@@ -1,0 +1,338 @@
+§ 全屏布局
+经典的全屏布局由顶部、底部、主体三部分组成，其特点为三部分左右满屏拉伸、顶部底部高度固定和主体高度自适应，主要应用在主体布局。该布局很常见，也是大部分Web应用主体的主流布局。通常使用<header>、<footer>和<main>三个标签语义化排版，<main>内还可插入<aside>作为侧栏。
+
+<div class="fullscreen-layout">
+  <!--顶部-->
+  <header></header>
+  <!--主题-->
+  <main></main>
+  <!--底部-->
+  <footer></footer>
+</div>
+.fullscreen-layout {
+  width: 400px;
+  height: 400px;
+}
+image.png
+
+§ position + left/right/top/bottom
+顶部、底部和主体声明left: 0和right: 0将其左右部分满屏拉伸；顶部和底部声明top: 0和bottom: 0分别将其吸顶和吸底，并声明俩高度为固定值；将主体的top和bottom分别声明为顶部高度和底部高度。
+
+.fullscreen-layout {
+  position: relative;
+}
+ 
+header, footer, main {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+ 
+header {
+  top: 0;
+  height: 50px;
+  background-color: #f66;
+}
+ 
+footer {
+  bottom: 0;
+  height: 50px;
+  background-color: #66f;
+}
+ 
+main {
+  top: 50px;
+  bottom: 50px;
+  background-color: #3c9;
+}
+§ flex
+使用flex实现会更简洁。display:flex默认会令子节点横向排列，需声明flex-direction:column改变子节点排列方向为纵向排列；顶部和底部高度固定，所以主体声明flex:1让高度自适应即可。
+
+.fullscreen-layout {
+  display: flex;
+  flex-direction: column;
+}
+ 
+header {
+  height: 50px;
+  background-color: #f66;
+}
+ 
+footer {
+  height: 50px;
+  background-color: #66f;
+}
+ 
+main {
+  flex: 1;
+  background-color: #3c9;
+}
+§ 两列布局
+经典的两列布局由左右两列组成，其特点为一列宽度固定，另一列宽度自适应和两列高度固定且相等。以下以左列宽度固定和右列宽度自适应为例，反之同理。
+
+<div class="two-column-layout">
+  <div class="left"></div>
+  <div class="right"></div>
+</div>
+.two-column-layout {
+  width: 400px;
+  height: 400px;
+}
+ 
+.left {
+  width: 100px;
+  background-color: #f66;
+}
+image.png
+
+§ float + margin-left/right
+左列声明float: left和固定宽度，由于float使节点脱流，右列需声明margin-left为左列宽度，以保证两列不会重叠。
+
+.left {
+  float: left;
+  height: 100%;
+}
+ 
+.right {
+  margin-left: 100px;
+  height: 100%;
+  background-color: #66f;
+}
+§ float + BFC
+左列声明同上，右列声明overflow: hidden使其形成BFC区域与外界隔离
+
+.left {
+  float: left;
+  height: 100%;
+}
+ 
+.right {
+  overflow: hidden;
+  height: 100%;
+  background-color: #66f;
+}
+§ flex
+使用flex实现会更简洁。左列声明固定宽度，右列声明flex: 1自适应宽度。
+
+.two-column-layout {
+  display: flex;
+}
+ 
+.right {
+  flex: 1;
+  background-color: #66f;
+}
+§ 三列布局
+经典的三列布局由左中右三列组成，其特点为连续两列宽度固定、剩余一列宽度自适应和三列高度固定且相等。以下以左中列宽度固定和右列宽度自适应为例，反之同理。整体的实现原理与上述两列布局一致。
+
+<div class="three-column-layout">
+  <div class="left"></div>
+  <div class="center"></div>
+  <div class="right"></div>
+</div>
+.three-column-layout {
+  width: 400px;
+  height: 400px;
+}
+ 
+.left {
+  width: 50px;
+  background-color: #f66;
+}
+ 
+.center {
+  width: 100px;
+  background-color: #66f;
+}
+image.png
+
+§ float + BFC
+.left {
+  float: left;
+  height: 100%;
+}
+ 
+.center {
+  float: left;
+  height: 100%;
+}
+ 
+.right {
+  overflow: hidden;
+  height: 100%;
+  background-color: #3c9;
+}
+§ flex
+.three-column-layout {
+  display: flex;
+}
+ 
+.right {
+  flex: 1;
+  background-color: #3c9;
+}
+§ 圣杯布局与双飞翼布局
+经典的圣杯布局和双飞翼布局都是由左中右三列组成，其特点为左右两列宽度固定、中间一列宽度自适应和三列高度固定且相等。其实也是上述两列布局和三列布局的变体。
+
+圣杯布局：父节点声明padding为左右列留出空位，将左右列固定在空位上
+
+双飞翼布局：中间列插入子节点并声明margin为左右列让出空位，将左右列固定在空位上
+
+image.png
+
+§ 圣杯布局：float + margin-left/right + padding-left/right
+由于浮动节点在位置上不能高于前面或平级的非浮动节点，否则会导致浮动节点下沉。因此在编写HTML结构时，将中间列节点挪到右列节点后面。
+
+<div class="grail-layout">
+  <div class="left"></div>
+  <div class="right"></div>
+  <div class="center"></div>
+</div>
+.grail-layout {
+  width: 400px;
+  height: 400px;
+  padding: 0 100px;
+}
+ 
+.left {
+  float: left;
+  margin-left: -100px;
+  width: 100px;
+  height: 100%;
+  background-color: #f66;
+}
+ 
+.right {
+  float: right;
+  margin-right: -100px;
+  width: 100px;
+  height: 100%;
+  background-color: #66f;
+}
+ 
+.center {
+  height: 100%;
+  background-color: #3c9;
+}
+§ 双飞翼布局：float + margin-left/right
+<div class="grail-layout">
+  <div class="left"></div>
+  <div class="right"></div>
+  <div class="center"></div>
+</div>
+.grail-layout {
+  width: 400px;
+  height: 400px;
+}
+ 
+.left {
+  float: left;
+  width: 100px;
+  height: 100%;
+  background-color: #f66;
+}
+ 
+.right {
+  float: right;
+  width: 100px;
+  height: 100%;
+  background-color: #66f;
+}
+ 
+.center {
+  margin: 0 100px;
+  height: 100%;
+  background-color: #3c9;
+}
+§ 圣杯布局/双飞翼布局：flex
+使用flex布局，左右两列宽度固定，中间列宽度自适应。
+
+<div class="grail-layout">
+  <div class="left"></div>
+  <div class="center"></div>
+  <div class="right"></div>
+</div>
+.grail-layout {
+  display: flex;
+  width: 400px;
+  height: 400px;
+}
+ 
+.left {
+  width: 100px;
+  background-color: #f66;
+}
+ 
+.center {
+  flex: 1;
+  background-color: #3c9;
+}
+ 
+.right {
+  width: 100px;
+  background-color: #66f;
+}
+§ 均分布局
+经典的均分布局由多列组成，其特点为每列宽度相等和每列高度固定且相等。总体来说，也是最简单的经典布局，由于每列宽度相等，所以很容易找到合适的方式处理。
+
+<div class="average-layout">
+  <div class="one"></div>
+  <div class="two"></div>
+  <div class="three"></div>
+  <div class="four"></div>
+</div>
+.one {
+  background-color: #f66;
+}
+ 
+.two {
+  background-color: #66f;
+}
+ 
+.three {
+  background-color: #f90;
+}
+ 
+.four {
+  background-color: #09f;
+}
+image.png
+
+§ float + width
+每列宽度声明为相等的百分比，若有4列则声明width:25%。N列就用公式100 / n求出最终百分比宽度，记得保留2位小数，懒人还可用width: calc(100% / n)自动计算呢。
+
+.average-layout {
+  width: 400px;
+  height: 400px;
+}
+ 
+div {
+  float: left;
+  width: 25%;
+  height: 100%;
+}
+§ column
+使用column实现会令CSS代码语义化更明确。column相关属性是为列排版应运而生的，相对flex相关属性来说更易懂易学。
+
+.average-layout {
+  column-count: 4;
+  column-gap: 0;
+  width: 400px;
+  height: 400px;
+}
+ 
+div {
+  height: 100%;
+}
+§ flex
+使用flex实现会更简洁。节点声明display:flex后，生成的FFC容器里所有子节点的高度都相等，因为容器的align-items默认为stretch，所有子节点将占满整个容器的高度。每列声明flex:1自适应宽度。
+
+.average-layout {
+  display: flex;
+  width: 400px;
+  height: 400px;
+}
+ 
+div {
+  flex: 1;
+}
