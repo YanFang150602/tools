@@ -1,0 +1,136 @@
+§ 居中布局
+居中布局在界面开发中是出现率非常高的一种布局，需要掌握水平居中和垂直居中的实现方式，了解其原理，避免死记硬背。
+
+水平居中
+
+margin:0 auto + width:fit-content：全部元素
+
+块级元素 + margin:0 auto + width：块级元素
+
+若节点不是块级元素需声明display: block
+
+若节点宽度已隐式声明则无需显式声明width
+
+行内元素 + text-aligin: center：行内元素
+
+父节点上声明text-align
+
+若节点不是行内元素需声明display: inline/inline-block
+
+position + left/right + margin-left/right + width：全部元素
+
+position + left/right + transform: translateX(-50%)：全部元素
+
+display: flex + justify-content: center：全部元素
+
+父节点上声明display和justify-content
+垂直居中
+
+块级元素 + padding-top/bottom：块级元素
+
+父节点高度未声明或自适应
+
+若节点不是块级元素需声明display: block
+
+行内元素 + line-height：行内元素
+
+父节点上声明line-height
+
+若节点不是行内元素需声明display: inline/inline-block
+
+display: table + display:table-cell + vertical-align: middle：全部元素
+
+父节点上声明display: table
+display: table-cell + vertical-align: middle：全部元素
+
+父节点上声明display和vertical-align
+position + top/bottom + margin-top/bottom + height：全部元素
+
+position + top/bottom + transform: translateY(-50%)：全部元素
+
+display: flex + align-items: center：全部元素
+
+父节点上声明display和align-items
+display: flex + margin: auto 0：全部元素
+
+父节点上声明display
+<div class="center-layout">
+  <div class="child"></div>
+</div>
+.center-layout {
+  width: 400px;
+  height: 400px;
+  background-color: #f66;
+}
+ 
+.child {
+  width: 100px;
+  height: 100px;
+  background-color: #66f;
+}
+
+§ display: inline-block
+子节点（.child）声明display: inline-block将其变成行内块级元素，那么可用text-align和line-height声明水平垂直居中了，但是行内块级元素与匿名行内盒的基线对齐存在很大差异，所以需声明vertical-align: middle将其调整到垂直居中的位置，不过这也是近似垂直居中，父节点最后还需声明font-size: 0消除该差异。
+
+.center-layout {
+  line-height: 400px;
+  text-align: center;
+  font-size: 0;
+}
+ 
+.child {
+  display: inline-block;
+  vertical-align: middle;
+}
+§ display: table-cell
+父节点声明display: table-cell模拟表格布局的垂直居中；子节点声明margin: 0 auto使其水平居中。
+
+.center-layout {
+  display: table-cell;
+  vertical-align: middle;
+}
+ 
+.child {
+  margin: 0 auto;
+}
+§ position + margin
+必须已知节点宽高，使用margin负值将节点拉回最中间，通常是margin-left和margin-top，可连写成margin: -height / 2 0 0 -width / 2。
+
+.center-layout {
+  position: relative;
+}
+ 
+.child {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -50px 0 0 -50px;
+}
+§ position + transform
+自从CSS3的transform普及后，声明transform: translate(-50%,-50%)可代替margin负值了，这样就无需声明宽高和计算宽高的二分之一是多少，真正做到自适应水平垂直居中。
+
+.center-layout {
+  position: relative;
+}
+ 
+.child {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+§ flex
+常规写法
+.center-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+终极写法
+.center-layout {
+  display: flex;
+}
+ 
+.child {
+  margin: auto;
+}
