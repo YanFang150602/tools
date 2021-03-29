@@ -1,0 +1,135 @@
+【转】WEB前端高性能优化之JavaScript优化细节
+日期：2010-05-27 20:25浏览：556评论：4
+转自：http://www.w3cgroup.com/article.asp?id=255
+
+做为一名网站开发WEB前端工程师，对自己开发的网站项目应该尽可能地对其性能进行优化，现在互联网上搜索到的网站性能优化多是翻译转载自Yahoo14条或34条。Yahoo的优化建议关注在大的方面，下面，W3C Group为大家呈现WEB前端开发高性能优化部分之JavaScript的优化细节！
+
+ 
+
+一、避免出现脚本失控
+不论什么脚本，在任何时间、任何浏览器上执行，都不应该超过100毫秒。如果实际执行的时间长于这个底限，一定要将进程分解成若干更小的代码段。
+
+脚本失控基本上有以下四个方面的原因：
+
+1. 在循环中执行了太多的操作
+
+    解决这个问题的诀窍就是用下面这两个问题来评估每个循环：
+    1. 这个循环必须要同步执行么？
+    2. 循环里面的数据，必须要按顺序执行么？
+
+    如果1和2都可以否定，那么建议使用setTimeout方式将循环体切分成小块进行异步处理
+
+    将循环中的定义变量及初始化操作放到循环外。参见：http://www.w3cgroup.com/article.asp?id=111
+
+2. 臃肿的函数体
+
+    在JavaScript中，我们应该尽可能的用局部变量来代替全局变量!
+
+    理解JavaScript作用域链。参见：http://www.jslab.org.cn/?tag=ScopeChainAndClosure
+
+    理解原型链。参见：http://www.jslab.org.cn/?tag=prototypeChain
+
+3. 过多的递归
+
+    使用迭代方式替代递归，采用memoization技术优化递归
+
+    斐波那契数列的递归算法优化，参见：http://www.jslab.org.cn/?tag=Memoization
+
+4. 过多的DOM调用
+
+    在Web开发中，JavaScript的一个很重要的作用就是对DOM进行操作。可你知道么？对DOM的操作是非常昂贵的，因为这会导致浏览器执行回流（reflow）操作。而执行了过多的回流操作，你就会发现自己的网站变得越来越慢了。我们应该尽可能的减少DOM操作。
+
+    回流操作主要会发生在几种情况下：
+
+        * 改变窗体大小
+        * 更改字体
+        * 添加移除stylesheet块
+        * 内容改变哪怕是输入框输入文字
+        * CSS虚类被触发如 :hover
+        * 更改元素的className
+        * 当对DOM节点执行新增或者删除操作或内容更改时。
+        * 动态设置一个style样式时（比如element.style.width="10px"）。
+        * 当获取一个必须经过计算的尺寸值时，比如访问offsetWidth、clientHeight或者其他需要经过计算的CSS值（在兼容DOM的浏览器中，可以通过getComputedStyle函数获取；在IE中，可以通过currentStyle属性获取）。
+
+
+    解决问题的关键，就是限制通过DOM操作所引发回流的次数:
+
+        1.在对当前DOM进行操作之前，尽可能多的做一些准备工作，保证N次创建，1次写入。
+
+        2.在对DOM操作之前，把要操作的元素，先从当前DOM结构中删除：
+            1. 通过removeChild()或者replaceChild()实现真正意义上的删除。
+            2. 设置该元素的display样式为“none”。
+            修改操作完成后，将上面这个过程反转过来，建议使用第2种方式。
+
+        3.CSS部分
+            另外一个经常引起回流操作的情况是通过style属性对元素的外观进行修改，如element.style.backgroundColor = "blue";
+            每次修改元素的style属性，都肯定会触发回流操作，要解决这个问题可以：
+            1.使用更改className的方式替换style.xxx=xxx的方式。
+            2.使用style.cssText = '';一次写入样式。
+            3. 避免设置过多的行内样式
+            4. 添加的结构外元素尽量设置它们的位置为fixed或absolute
+            5. 避免使用表格来布局
+            6. 避免在CSS中使用JavaScript expressions(IE only)
+
+        4.将获取的DOM数据缓存起来。这种方法，对获取那些会触发回流操作的属性（比如offsetWidth等）尤为重要。
+
+        5.当对HTMLCollection对象进行操作时，应该将访问的次数尽可能的降至最低，最简单的，你可以将length属性缓存在一个本地变量中，这样就能大幅度的提高循环的效率。
+
+ 
+
+二、避免大字符串字面量对象操作，如 字符串.lenth，尽量转换为new String(字符串)后再进行操作
+ 
+
+三、在做字符查找替换等操作时善用正则表达式
+快速掌握ECMAScript正则表达式。参见：http://www.w3cgroup.com/article.asp?id=202
+
+ 
+
+四、减少语句，利用运算符优先级实现if else表达式，使用三元表达式，使用连续表达式（看情况，将损失程序可读性）
+
+利用运算符优先级实现if else表达式参见：http://www.w3cgroup.com/article.asp?id=131
+
+ 
+
+五、将CSS，JS文件合并到一个文件（非BT爱好者还是不要玩了^_^）
+参见：http://www.w3cgroup.com/article.asp?id=29
+
+ 
+
+六、避免Javascript事件绑定出现内存泄漏
+"These memory leaks often occur as a result of circular references between JavaScript objects and objects within IE’s DOM (document object model)." Microsoft GPDE Team Blog
+
+参见：http://www.w3cgroup.com/article.asp?id=207
+
+ 
+
+七、使用WEB Workers技术（支持html5的浏览器）
+Web Workers为JavaScript提供了一种能在后台进程中运行的方法，Web Workers进程能够在不影响用户界面的情况下处理任务。
+
+参见：http://www.w3cgroup.com/article.asp?id=242
+
+ 
+
+八、Y!14条（14 Rules for Faster-Loading Web Sites）
+    *  Rule 1 - Make Fewer HTTP Requests
+    * Rule 2 - Use a Content Delivery Network (Server端)
+    * Rule 3 - Add an Expires Header (Server端)
+    * Rule 4 - Gzip Components (Server端)
+    * Rule 5 - Put Stylesheets at the Top
+    * Rule 6 - Put Scripts at the Bottom
+    * Rule 7 - Avoid CSS Expressions
+    * Rule 8 - Make JavaScript and CSS External
+    * Rule 9 - Reduce DNS Lookups (Server端)
+    * Rule 10 - Minify JavaScript
+    * Rule 11 - Avoid Redirects (Server端)
+    * Rule 12 - Remove Duplicate Scripts
+    * Rule 13 - Configure ETags (Server端)
+    * Rule 14 - Make AJAX Cacheable
+    * Rule 15 - Use Iframes Wisely
+
+参见：http://www.w3cgroup.com/article.asp?id=97
+
+ 
+
+九、微软早期的DHTML优化建议
+    * 使用数组push替代字符串累加
