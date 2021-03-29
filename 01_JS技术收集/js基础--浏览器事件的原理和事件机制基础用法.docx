@@ -1,0 +1,259 @@
+js基础--浏览器事件的原理和事件机制基础用法  
+
+一、一个实例
+二、事件机制的组成
+通过上面的实例，我们可以抽象出一个事件机制有三个组成部分：
+1.事件源：即事件的发送者，在上例中为水壶；
+2.事件：事件源发出的一种信息或状态，比如上例的警报声，它代表着水开了；
+3.事件侦听者：对事件作出反应的对象，比如上例中的你。在设计事件机制时一般把侦听者设计为一个函数，当事件发送时，调用此函数。
+三、什么是事件？
+事件：浏览器自己触发的或者用户手动触发的页面内容状态的改变，通俗点说事件是实现浏览器与用户交互的唯一途径。
+事件处理函数：事件发生时自动调用的函数；
+四、事件类型有哪些？
+1. 表单事件
+浏览器的早期就是支持表单和超链接的元素。所以表单事件是最早，也是最稳定的事件。
+submit：表单提交
+reset：表单重置
+change：值发生改变
+blur：离焦（不会冒泡）
+focus：聚焦（不会冒泡）
+2. window 事件
+window 事件指的是浏览器窗口本身而不是窗口内的文档对象。
+load：页面加载完成时触发
+unload：当用户离开当前文档转而其他文档时调用
+resize：浏览器窗口改变
+error 页面上有脚本报错时触发
+3. 鼠标事件
+mousemove：移动鼠标时都会触发
+mousedown：按下鼠标按键时触发
+mouseup：释放鼠标按键时触发
+click：鼠标单击时触发
+dblclick：鼠标双击时触发
+scroll：滚轮滑动时触发（懒加载、加载更多、回到顶部）
+mouseover：鼠标进入元素时触发（鼠标悬浮）
+mouseout：鼠标离开元素时触发
+mouseenter：鼠标进入元素时触发（不会冒泡）
+mouseleave：鼠标离开元素时触发（不会冒泡）
+4. 键盘事件
+keydown：按下按键触发
+keyup：释放按键触发
+keypress：当 keydown 事件产生可打印字符时，就会触发 keypress 事件
+5. H5 新增事件
+contextmenu： 鼠标右击事件
+beforeunload：关闭浏览器窗口之前触发的事件
+DOMContentLoaded：文档对象加载完成之后就触发的事件，无需等待样式、图片等资源
+readystatechange：document有 readyState 属性来描述 document 的 loading状态，readyState 的改变会触发 readystatechange 事件
+pageShow 和 pagehide：每次用户浏览关闭页面时触发
+hashchange：当锚部分发生变化时触发
+6. 移动设备事件
+orientationchange：苹果公司为移动 Safari 添加的，改变设备的查看模式时触发，对象如 window.orientation 一致。
+MozOrientation：与 orientationchange 类似，只不过是 Firefox 3.6 支持的。
+deviceorientation：可以响应设备的方向。
+devicemotion：检查设备什么时候移动。
+7. 触摸与手势事件
+触摸事件：
+touchstart 触摸开始
+touchmove 触摸中
+touchend 触摸结束
+touchcancel 取消触摸
+手势事件：
+gesturestart 手势开始
+gesturechange 手势改变
+gestureend 手势离开
+五、什么是事件模型？
+从事件触发到执行完事件处理函数的过程；
+• Dom0级模型
+又称为原始事件模型, 在该模型中, 事件不会传播, 即没有事件流的概念. 事件绑定监听函数比较简单, 有两种方式
+
+1	// 1. html代码中直接绑定
+2	<input type = "button" onclick = "fun()">
+3	
+4	// 2. 通过js代码指定属性值
+5	var btn = document.getElementById('btn');
+6	btn.onclick = fun;
+7	// 移除监听函数
+8	btn.onclick = null;
+• IE事件模型
+IE事件模型有两个过程: 事件处理和事件冒泡
+
+1	var btn = document.getElementById('btn');
+2	btn.attachEvent(‘onclick’, handler);
+3	btn.detachEvent(‘onclick’, handler);
+• Dom2级模型(属于W3C标准模型)
+在该事件模型中, 一次事件共有三个过程: 
+  
+事件捕获--事件处理--事件冒泡
+
+1	var btn = document.getElementById('btn');
+2	btn.addEventListener(‘click’, handler, false);
+3	btn.removeEventListener(‘click’, handler, false);
+4	
+5	/**
+6	* 参数说明:
+7	* eventType指定事件类型(不要加on)
+8	* handler是事件处理函数
+9	* useCapture， boolean值
+10	false - 注册程序在冒泡阶段触发
+11	true - 注册程序在捕获阶段触发
+12	**/
+六、事件的监听
+事件监听的三种方式：
+1、html内联属性：<button οnclick=“btnClick”>
+  问题：不符合内容与行为分离的原则，不便于维护和重用；
+2、DOM属性绑定：document.getElementById(“btn”).onclick = function () {}
+在JS中，以赋值的方式，定义一个函数，交给elem的事件属性保管；当事件触发时，元素会自动调用该事件属性保管的处理函数；
+问题：一个元素的一个事件，只能绑定一个处理函数；
+3、事件监听函数：document.getElementById(“btn”).addEventListener(“click”,handler, false)
+创建一个事件监听对象
+接受三个参数：
+• 要处理的事件名
+• 作为事件处理程序的函数
+• 一个boolean值，如果值为true，表示在捕获阶段调用事件处理程序；如果是false，表示在冒泡阶段调用此事件处理程序。
+function addEventHandler(obj, eventName, handler) {
+    if (document.addEventListener) {
+        obj.addEventListener(eventName, handler, false);
+    }
+    else if (document.attachEvent) {
+        obj.attachEvent("on" + eventName, handler);
+    }    
+    else {
+        obj["on" + eventName] = handler;
+    }
+}
+七、事件移除
+1、document.getElementById(“btn”).removeEventListener(“click”, ()=>{}, false)
+2、document.getElementById(“btn”).detachEvent(“onclick”)
+3、document.getElementById(“btn”).onclick = null
+强调：移除事件监听，只能用函数名才能获得原函数，所以，监听时，不能用匿名函数。
+function removeEventHandler(obj, eventName, handler) {
+    if (document.removeEventListener) {
+        obj.removeEventListener(eventName, handler, false);
+    }
+    else if (document.detachEvent) {
+        obj.detachEvent("on" + eventName, handler);
+    }
+    else {
+        obj["on" + eventName] = null;
+    }
+}
+八、浏览器事件流
+DOM2级事件规定的事件流包括三个阶段：捕获阶段，目标阶段，冒泡阶段
+1、捕获阶段：用户对 DOM 元素进行操作，从 Window 依次经过 document、html、body等，到达目标元素父节点的过程称为捕获阶段，注意此时还未到达目标节点。
+2、目标阶段：捕获阶段结束，事件到达目标元素并触发事件的过程是目标阶段
+3、冒泡阶段：目标元素触发事件结束后，向父元素逐级返回的过程
+例：a.html
+九、事件委托（利用冒泡/事件代理）
+事件委托是指，某元素的事件自己不处理，而是借助事件冒泡原理交由目标元素的父级或祖级元素处理的机制。例如，li列表事件可以绑定到ul，radio列表事件可以绑定在父级元素
+1、为什么要事件委托
+减少事件绑定，提升性能（事件绑定会占用内存）
+动态监听，避免增加或删除元素导致的事件绑定
+2、如何？
+如果多个平级子元素，需要绑定相同的事件处理函数时，只需要在他们的父元素上绑定一次，多有的子元素就可共用；
+2、流程
+事件到达目标元素后，冒泡返回，被已绑定事件的父级或祖级元素响应执行。其中，事件对象中的 target 属性记录实际触发本次事件的元素
+十、阻止事件冒泡
+在不希望事件冒泡的时候可以阻止该机制
+function preventBubble(e) {
+    if (!e) {
+        const e = window.event;
+    }
+    e.cancelBubble = true;
+    if (e.stopPropagation) {
+        e.stopPropagation();
+    }
+}
+练习题
+统一设置css
+.test2 {
+  height: 50px;
+}
+题目一
+<div class="test1">
+    <div class="test2"></div>
+</div>
+<script>
+    document.querySelector('.test1').addEventListener('click',function () {
+        console.log(1)
+    })
+    document.querySelector('.test2').addEventListener('click',function () {
+        console.log(2)
+    })
+</script>
+请问：点击div.test1后，数字1和2，谁先被打印出来？
+题目二
+<div class="test1">
+    <div class="test2"></div>
+</div>
+<script>
+    document.querySelector('.test1').addEventListener('click', function () {
+        console.log(1)
+    }, true)
+    document.querySelector('.test2').addEventListener('click', function () {
+        console.log(2)
+    }, true)
+</script>
+请问：点击div.test1后，数字1和2，谁先被打印出来？
+题目三
+<div class="test1">
+    <div class="test2"></div>
+</div>
+<script>
+    document.querySelector('.test1').addEventListener('click', function () {
+        console.log(1)
+    })
+    document.querySelector('.test2').addEventListener('click', function () {
+        console.log(2)
+    }, true)
+</script>
+请问：点击div.test1后，数字1和2，谁先被打印出来？
+题目四
+<div class="test1">
+    <div class="test2"></div>
+</div>
+<script>
+    document.querySelector('.test1').addEventListener('click', function () {
+        console.log(1)
+    }, true)
+    document.querySelector('.test2').addEventListener('click', function () {
+        console.log(2)
+    })
+</script>
+请问：点击div.test1后，数字1和2，谁先被打印出来？
+题目一到四的答案
+题目一：2,1
+题目二：1,2
+题目三：2,1
+题目四：1,2
+如果上面四道题，你做不对，说明了两件事
+一、你对事件机制的全过程不了解，其实很简单事件机制是先进行捕获，再进行冒泡
+二、你对addEventListener的第三个参数不了解；
+题目五
+<div class="test1"></div>
+<script>
+    document.querySelector('.test1').addEventListener('click', function () {
+        console.log(1)
+    })
+    document.querySelector('.test1').addEventListener('click', function () {
+        console.log(2)
+    }, true)
+</script>
+请问：点击div.test1后，数字1和2的出现顺序是什么样的？
+1,2
+题目五可能和你想的不太一样，
+因为如果被监听的元素没有子元素，那么哪个监听代码写在前面，就先执行哪个！
+终极一题
+<label>Click me <input type="text"></label>
+<script>
+    document.querySelector('label').addEventListener('click',function () {
+        console.log(1)
+    })
+    document.querySelector('input').addEventListener('click',function () {
+        console.log(2)
+    })
+</script>
+请问：点击label后，数字1和2的出现顺序是什么样的？
+答案：1,2,1
+因为label和input是有绑定的
+点击label后，浏览器自动帮你再点击一次label
+过程就是先进行一次事件机制，这一次对内部input元素的事件监听是不管不问的，所以先打出1
+结束后，再进行一次事件机制，这一次，按照正常事件机制流程走，所以接着打出了2,1
