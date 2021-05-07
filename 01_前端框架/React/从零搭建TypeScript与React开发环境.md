@@ -89,7 +89,7 @@ module.exports = {
 
 ```json
 "scripts":  {  
-    "dev":  "webpack --config webpack.config.js --mode development"  
+    "dev":  "webpack --config ./build/webpack.config.js --mode development"  
 },
 ```
 
@@ -98,17 +98,16 @@ module.exports = {
 ```bash
 npm  install babel-loader @babel/core @babel/cli @babel/preset-env -D 
 npm  install core-js regenerator-runtime -S
+
+# 简单说明一下：
+# 1. Babel的核心功能包含在 @babel/core 模块中。
+# 2. babel提供的命令行工具@babel/cli，主要是提供babel这个命令。
+# 3. @babel/preset-env 主要作用是对我们所使用的并且目标浏览器中缺失的功能进行代码转换和加载  polyfill。在不进行任何配置的情况下，它所包含的插件将支持所有最新的JS特性(ES2015,ES2016等，不包含 stage  阶段)，将其转换成ES5代码。
+# 4. core-js和regenerator-runtime可以模拟完整的ES2015+环境。这意味着可以使用诸如Promise和Map之类的新的内置组件、Array.from之类的静态方法、Array.prototype.includes之类的实例方法。
+# 5. @babel/preset-env提供了一个useBuiltIns参数，设置值为usage时，就只会包含代码需要的polyfill。有一点需要注意：配置此参数的值为usage，必须要同时设置corejs。
 ```
 
-简单说明一下：
-
-- Babel的核心功能包含在 @babel/core 模块中。
-- babel提供的命令行工具@babel/cli，主要是提供babel这个命令。
-- @babel/preset-env 主要作用是对我们所使用的并且目标浏览器中缺失的功能进行代码转换和加载  polyfill。在不进行任何配置的情况下，它所包含的插件将支持所有最新的JS特性(ES2015,ES2016等，不包含 stage  阶段)，将其转换成ES5代码。
-- core-js和regenerator-runtime可以模拟完整的ES2015+环境。这意味着可以使用诸如Promise和Map之类的新的内置组件、Array.from之类的静态方法、Array.prototype.includes之类的实例方法。
-- @babel/preset-env提供了一个useBuiltIns参数，设置值为usage时，就只会包含代码需要的polyfill。有一点需要注意：配置此参数的值为usage，必须要同时设置corejs。
-
-创建babel.config.js
+- 创建babel.config.js：
 
 ```js
 module.exports =  {
@@ -124,7 +123,7 @@ module.exports =  {
 };
 ```
 
-修改webpack配置
+- 修改webpack配置文件：
 
 ```js
 const path = require('path');
@@ -268,7 +267,7 @@ module.exports = {
 
 - 创建public/index.html
 
-```
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -353,9 +352,9 @@ module.exports = {
 
 - 修改package.json
 
-```
+```json
 "scripts": {
-    "dev": "webpack-dev-server --open"
+    "dev": "webpack-dev-server --config ./build/webpack.config.js --mode development"
 },
 ```
 
